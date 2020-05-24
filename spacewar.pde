@@ -3,14 +3,15 @@
 // X bullets
 // X bullet collision with ship
 // X sounds
-// thrust sounds (white noise)
-// bullet collisions with each other and if close to a ship, destroy ship as well
+// X hyperspace
+// X thrust sounds (white noise)
+// X scoring and keystroke display (legend)
+// X pause game
 // engine overheating!
+// bullet collisions with each other and if close to a ship, destroy ship as well
 // heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
-// scoring and keystroke display (legend)
-// hyperspace
 // explosion animation
-// pause game
+// improved stats: display "Overheated", "Destroyed", "Hit the sun!"
 
 import processing.sound.*;
 SoundFile[] explosions;
@@ -22,6 +23,7 @@ int windowSize = 800;
 int numStars = 100;
 float shipWidth = 15;
 float shipHeight = shipWidth * 1.5;
+boolean gamePaused;
 
 PVector[] stars = new PVector[numStars];
 
@@ -55,6 +57,7 @@ void setup()
   ship2 = new Ship(1, windowSize - partWindow,windowSize - partWindow, color(255,0,0));
   createStars();
   noise.amp(0.5);
+  gamePaused = false;
 
 }
 
@@ -66,7 +69,7 @@ void draw()
   drawSun(25);  
   popMatrix();
   drawStars();
-  stats.render(ship1,ship2  );
+  stats.render(ship1,ship2);
   
   if (ship1.hitOtherShip(ship2)) {
     ship1.blowUp();
@@ -80,19 +83,31 @@ void draw()
   
   if (ship2.onALiveBullet(ship1)) {
     ship1.blowUp();
-     ship2.addPoints(1);
+    ship2.addPoints(1);
   }
   
-  ship1.update();
+  if (!gamePaused) {
+    ship1.update();
+  }
   ship1.render();  
   
-  ship2.update();
+  if (!gamePaused) {
+    ship2.update();
+  }
   ship2.render(); 
   
 }
 
 void keyPressed() {  
  switch (key) {
+   case '0':
+   case '1':
+     gamePaused = !gamePaused;
+     break;
+   case ' ':
+     ship1.goIntoHyperspace();
+     ship2.goIntoHyperspace();
+     break; 
    case 's':
     ship1.applyThrust();
     break;

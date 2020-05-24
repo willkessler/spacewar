@@ -6,6 +6,8 @@ class Ship {
   color shipColor;
   int shipId;
   int score;
+  int shipState; // 0 == visible, 1 == in hyperspace (not drawn), 2 == exploding (not drawn)
+  int shipStateTimeout; // counter for how long ships stay in hyperspace (or are exploding)
   float rot, rotChange, rotIncrement;
   float accelFactor;
   int numBullets = 5;
@@ -29,6 +31,7 @@ class Ship {
     thrustOn = false;
     accelFactor = 0.009;
     shipId = id;
+    shipState = 0; // visible
     friction = 0.9995; // even in outer space, you slow down! whaaaa?
     bullets = new Bullet[numBullets];
     for (int i = 0; i < numBullets; ++i) {
@@ -40,6 +43,10 @@ class Ship {
     return score;
   }
   
+  int getShipState() {
+    return shipState;
+  }
+  
   void fireBullet(PVector pos, PVector vel) {
     for (Bullet bullet : bullets) {
       if (!bullet.isLive()) {
@@ -47,6 +54,13 @@ class Ship {
         break;
       }
     }
+  }
+  
+  void goIntoHyperspace() {
+    shipState = 1; // ship is now in hyperspace
+    shipStateTimeout = 100; // how long ship stays in hyperspace
+    pos.x = random(width);
+    pos.y = random(height);
   }
   
   void update() {
@@ -67,23 +81,32 @@ class Ship {
     wrapAroundEdges(pos);
     if (insideSun(pos)) {
       blowUp();
+      addPoints(-1);
     }
     
     accel.mult(0);
   
+    updateBullets();
+  }
+  
+  void updateBullets() {
+    for (Bullet bullet : bullets) {
+      if (bullet.isLive()) {
+        bullet.update();
+      }
+    }
   }
   
   void renderBullets() {
     for (Bullet bullet : bullets) {
       if (bullet.isLive()) {
-        bullet.update();
         bullet.render();
       }
     }
   }
   
   void addPoints(int amountToAdd) {
-    score = score + amountToAdd;
+    score = max(0,score + amountToAdd);
   }
 
   boolean onALiveBullet(Ship opponentShip) {
@@ -138,6 +161,15 @@ class Ship {
   }
   
   void render() {
+    if (shipState != 0) { // if ship is not visible, don't draw anything (e.g. in hyperspace or exploding)
+      shipStateTimeout -= 1;
+      if (shipStateTimeout == 0) {
+        shipState = 0; // ship becomes visible again
+      } else {
+        return;
+      }
+    }
+    
     pushMatrix();
     translate(pos.x,pos.y);
     rotate(radians(rot));
