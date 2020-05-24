@@ -15,7 +15,12 @@ class Stats {
     fill(255,0,0);
     text("Player2:" + ship2.getScore(),width - 120,20);
     
+    
     // display engine overheat messages!
+    fill(0,255,0);
+    text("temp:" + ship1.getEngineTemp(),20,70);
+    fill(255,0,0);
+    text("temp:" + ship2.getEngineTemp(),725,70);
     
     if (ship1.getShipState() == 1) {
       fill(0,255,0);

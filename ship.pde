@@ -8,6 +8,7 @@ class Ship {
   int score;
   int shipState; // 0 == visible, 1 == in hyperspace (not drawn), 2 == exploding (not drawn)
   int shipStateTimeout; // counter for how long ships stay in hyperspace (or are exploding)
+  int engineTemp; // how hot your engine is getting. Don't go too high!
   float rot, rotChange, rotIncrement;
   float accelFactor;
   int numBullets = 5;
@@ -29,6 +30,7 @@ class Ship {
     rotChange = 0;
     rotIncrement = 3;
     thrustOn = false;
+    engineTemp = 0;
     accelFactor = 0.009;
     shipId = id;
     shipState = 0; // visible
@@ -45,6 +47,9 @@ class Ship {
   
   int getShipState() {
     return shipState;
+  }
+  int getEngineTemp(){
+    return engineTemp;
   }
   
   void fireBullet(PVector pos, PVector vel) {
@@ -68,6 +73,9 @@ class Ship {
       accel.x = sin(radians(rot)) * accelFactor;
       accel.y = -cos(radians(rot)) * accelFactor;
       noise.play();
+      engineTemp += 5;
+    } else { 
+      engineTemp = max (0,engineTemp - 1);
     }
     accel.add(calculateGravityForce(pos,mass));
     vel.add(accel);
@@ -82,7 +90,14 @@ class Ship {
     if (insideSun(pos)) {
       blowUp();
       addPoints(-1);
-    }
+    } else if (engineTemp > 300) {
+      // you overheated, you die!
+       blowUp();
+      addPoints(-1);
+      shipState = 2; // exploding
+      shipStateTimeout = 100;
+  }
+    
     
     accel.mult(0);
   
@@ -149,6 +164,7 @@ class Ship {
     pos.y = startPos.y;
     vel.x = 0;
     vel.y = 0;
+    engineTemp = 0;
   }
   
   void fireBullet() {
