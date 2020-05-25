@@ -9,9 +9,10 @@
 // X pause game
 // X engine overheating!
 // X bullet collisions 
+// X explosion animation
+// X improved stats: display "Overheated", "Destroyed", "Hit the sun!"
 // heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
-// explosion animation
-// improved stats: display "Overheated", "Destroyed", "Hit the sun!"
+// orbiting planet
 
 import processing.sound.*;
 SoundFile[] explosions;
