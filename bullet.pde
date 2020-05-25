@@ -7,7 +7,8 @@ class Bullet {
   float gunForceMag = 1.5; 
   boolean live; // if false, this bullet is not active and can be replaced with a new ("live") bullet.
   color bulletColor;
-  float collisionTolerance = shipWidth / 2;
+  float shipBulletCollisionTolerance = shipWidth / 2;
+  float bulletBulletCollisionTolerance = shipWidth / 4;
   
   Bullet(color bulletCol) {
     live = false;
@@ -26,7 +27,7 @@ class Bullet {
     live = false;
   }
 
-  boolean collides (PVector objectPos) {
+  boolean collides (PVector objectPos, float collisionTolerance) {
     float bulletDistance = pos.dist(objectPos);
     return (bulletDistance < collisionTolerance);
   }

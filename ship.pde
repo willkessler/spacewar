@@ -13,6 +13,7 @@ class Ship {
   float accelFactor;
   int numBullets = 5;
   float mass = 1.0;
+  float tooHotEngineTemp = 300;
   boolean thrustOn;
   PVector startPos;
   Bullet[] bullets;
@@ -48,8 +49,12 @@ class Ship {
   int getShipState() {
     return shipState;
   }
-  int getEngineTemp(){
+  int getEngineTemp() {
     return engineTemp;
+  }
+  
+  int getShipColor() {
+    return shipColor;
   }
   
   void fireBullet(PVector pos, PVector vel) {
@@ -57,6 +62,20 @@ class Ship {
       if (!bullet.isLive()) {
         bullet.fire(pos,vel,rot);
         break;
+      }
+    }
+  }
+  
+  void checkBulletsCollide(Ship otherShip) {
+    for (Bullet bullet1 : bullets) {
+      for (Bullet bullet2 : otherShip.bullets) {
+        if (bullet1.isLive() && bullet2.isLive()) {
+           if (bullet1.collides(bullet2.pos, bullet1.bulletBulletCollisionTolerance)) {
+             bullet1.die();
+             bullet2.die();
+             playRandomExplosionSound();
+          }
+        }
       }
     }
   }
@@ -73,7 +92,7 @@ class Ship {
       accel.x = sin(radians(rot)) * accelFactor;
       accel.y = -cos(radians(rot)) * accelFactor;
       noise.play();
-      engineTemp += 5;
+      engineTemp += 4;
     } else { 
       engineTemp = max (0,engineTemp - 1);
     }
@@ -90,14 +109,13 @@ class Ship {
     if (insideSun(pos)) {
       blowUp();
       addPoints(-1);
-    } else if (engineTemp > 300) {
+    } else if (engineTemp > tooHotEngineTemp) {
       // you overheated, you die!
-       blowUp();
+      blowUp();
       addPoints(-1);
       shipState = 2; // exploding
       shipStateTimeout = 100;
-  }
-    
+    }    
     
     accel.mult(0);
   
@@ -127,7 +145,7 @@ class Ship {
   boolean onALiveBullet(Ship opponentShip) {
     for (Bullet bullet : bullets) {
       if (bullet.isLive()) {
-        if (bullet.collides(opponentShip.pos)) {
+        if (bullet.collides(opponentShip.pos, bullet.shipBulletCollisionTolerance)) {
           bullet.die();
           return true;
         }
@@ -136,6 +154,10 @@ class Ship {
     return false;
   } 
  
+  boolean engineGettingTooHot() {
+    return (engineTemp > tooHotEngineTemp * 0.75);
+  }
+      
   void startTurning(float direction) {
     rotChange = direction * rotIncrement;
   }
@@ -157,9 +179,13 @@ class Ship {
     return (((abs(pos.x - otherShip.pos.x) < 10) && (abs(pos.y - otherShip.pos.y) < 10)));
   }
   
-  void blowUp() {
+  void playRandomExplosionSound() {
     int randomExplosionSound = int(random(10));
     explosions[randomExplosionSound].play();
+  }
+  
+  void blowUp() {
+    playRandomExplosionSound();
     pos.x = startPos.x;
     pos.y = startPos.y;
     vel.x = 0;

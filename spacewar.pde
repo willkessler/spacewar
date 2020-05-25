@@ -7,8 +7,8 @@
 // X thrust sounds (white noise)
 // X scoring and keystroke display (legend)
 // X pause game
-// engine overheating!
-// bullet collisions with each other and if close to a ship, destroy ship as well
+// X engine overheating!
+// X bullet collisions 
 // heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
 // explosion animation
 // improved stats: display "Overheated", "Destroyed", "Hit the sun!"
@@ -16,6 +16,7 @@
 import processing.sound.*;
 SoundFile[] explosions;
 SoundFile gunshot;
+SoundFile engineAlarm;
 Stats stats;
 WhiteNoise noise = new WhiteNoise(this);
 
@@ -47,6 +48,7 @@ void setup()
   explosions[8] = new SoundFile(this, "Explosion+10.mp3");
   explosions[9] = new SoundFile(this, "Explosion+11.mp3");
   gunshot = new SoundFile(this, "Gun+Silencer.mp3");
+  engineAlarm = new SoundFile(this, "beep-07.mp3");
   
   size(800,800);
   background(255,255,255);
@@ -85,6 +87,8 @@ void draw()
     ship1.blowUp();
     ship2.addPoints(1);
   }
+  
+  ship1.checkBulletsCollide(ship2);
   
   if (!gamePaused) {
     ship1.update();

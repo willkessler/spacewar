@@ -4,7 +4,29 @@ class Stats {
  
   Stats() {
    f = createFont("Courier",16,true); 
- }
+  }
+ 
+  void  renderEngineTemp (Ship ship) {
+    int barHeight = 10;
+    int barTop = 80;
+    int barWidth = 100;
+    int leftOffset = ship.shipId == 0 ? 10 : width - barWidth - 15;
+    color tempColor = ship.getShipColor();
+    float scaledTemp = (ship.getEngineTemp() / ship.tooHotEngineTemp) * barWidth;
+    
+    fill(tempColor);
+    text("Engine Temp:" , leftOffset ,barTop - 5);
+    fill(0);
+    stroke(255);
+    rect(leftOffset - 1, barTop - 1, barWidth + 1, barHeight + 1, 2);
+    if (ship.engineGettingTooHot()) {
+      fill(255,0,0); // this is red if your engine is getting hot
+    } else {
+      fill(255,255,255); // white, you're still ok
+    }
+    rect(leftOffset, barTop, scaledTemp, barHeight, 2);
+    
+  }
   
   void render(Ship ship1, Ship ship2) {
    textFont(f);
@@ -17,10 +39,6 @@ class Stats {
     
     
     // display engine overheat messages!
-    fill(0,255,0);
-    text("temp:" + ship1.getEngineTemp(),20,70);
-    fill(255,0,0);
-    text("temp:" + ship2.getEngineTemp(),725,70);
     
     if (ship1.getShipState() == 1) {
       fill(0,255,0);
@@ -28,5 +46,8 @@ class Stats {
        fill(255,0,0);
       text("Hyperspace!", width - 120, 40);
     }
+    
+    renderEngineTemp(ship1);
+    renderEngineTemp(ship2);
   }
 }
