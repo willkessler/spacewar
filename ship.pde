@@ -44,7 +44,9 @@ class Ship {
     }
     shipExplosion = new Explosion(this);
   }
-  
+ 
+// =-=-==-=-==-=-==-=-==-=-==-=-= UTILITY METHODS =-=-==-=-==-=-==-=-==-=-==-=-=
+
   int getScore(){
     return score;
   }
@@ -74,6 +76,10 @@ class Ship {
     }
   }
   
+  void fireMissile() {
+    println("Missile for ship " + shipId + " is away!");
+  }
+  
   void checkBulletsCollide(Ship otherShip) {
     for (Bullet bullet1 : bullets) {
       for (Bullet bullet2 : otherShip.bullets) {
@@ -93,41 +99,6 @@ class Ship {
     shipStateTimeout = 100; // how long ship stays in hyperspace
     pos.x = random(width);
     pos.y = random(height);
-  }
-  
-  void update() {
-    if (thrustOn) {
-      accel.x = sin(radians(rot)) * accelFactor;
-      accel.y = -cos(radians(rot)) * accelFactor;
-      noise.play();
-      engineTemp += engineHeatConstant;
-    } else { 
-      engineTemp = max (0,engineTemp - 1);
-    }
-    accel.add(calculateGravityForce(pos,mass));
-    vel.add(accel);
-    vel.mult(friction);
-    //if (shipId == 0) {
-    //  println("speed:", vel.mag());
-    //}
-    vel.limit(maxSpeed);
-    pos.add(vel);
-    rot = rot + rotChange;
-    wrapAroundEdges(pos);
-    if (insideSun(pos)) {
-      blowUp();
-      addPoints(-1);
-    } else if (engineTemp > tooHotEngineTemp) {
-      // you overheated, you die!
-      blowUp();
-      addPoints(-1);
-      setShipState(3); // overheat
-      shipStateTimeout = 100;
-    }    
-    
-    accel.mult(0);
-  
-    updateBullets();
   }
   
   void updateBullets() {
@@ -210,6 +181,43 @@ class Ship {
         break;
       } 
     }
+  }
+  
+// =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE FOR SHIPS =-=-==-=-==-=-==-=-==-=-==-=-= 
+  
+  void update() {
+    if (thrustOn) {
+      accel.x = sin(radians(rot)) * accelFactor;
+      accel.y = -cos(radians(rot)) * accelFactor;
+      noise.play();
+      engineTemp += engineHeatConstant;
+    } else { 
+      engineTemp = max (0,engineTemp - 1);
+    }
+    accel.add(calculateGravityForce(pos,mass));
+    vel.add(accel);
+    vel.mult(friction);
+    //if (shipId == 0) {
+    //  println("speed:", vel.mag());
+    //}
+    vel.limit(maxSpeed);
+    pos.add(vel);
+    rot = rot + rotChange;
+    wrapAroundEdges(pos);
+    if (insideSun(pos)) {
+      blowUp();
+      addPoints(-1);
+    } else if (engineTemp > tooHotEngineTemp) {
+      // you overheated, you die!
+      blowUp();
+      addPoints(-1);
+      setShipState(3); // overheat
+      shipStateTimeout = 100;
+    }    
+    
+    accel.mult(0);
+  
+    updateBullets();
   }
   
   void render() {

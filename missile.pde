@@ -18,7 +18,13 @@ class Missile {
   
   Missile() {
     fuel = 1000;
-    
   }
+  
+  void update() {
+  }
+  
+  void render() {
+  }
+  
   
 }

@@ -17,97 +17,25 @@
 // keys legend at bottom of screen
 
 import processing.sound.*;
+
+int windowSize = 800;
+float shipWidth = 15;
+float shipHeight = shipWidth * 1.5;
+float halfShipHeight = shipHeight / 2;
+float halfShipWidth = shipWidth / 2;
+boolean gamePaused;
+
 SoundFile[] explosions;
 SoundFile gunshot;
 SoundFile engineAlarm;
 Stats stats;
 WhiteNoise noise = new WhiteNoise(this);
 
-int windowSize = 800;
-int numStars = 100;
-float shipWidth = 15;
-float shipHeight = shipWidth * 1.5;
-float halfShipHeight = shipHeight / 2;
-float halfShipWidth = shipWidth / 2;
-
-boolean gamePaused;
-
-PVector[] stars = new PVector[numStars];
-
-
 Ship ship1, ship2;
- 
-void setup()
-{
-  stats = new Stats();
-  //Missile oneMissile = new Missile();
-  // Load a soundfile from the /data folder of the sketch and play it back
-  explosions = new SoundFile[10];
-  explosions[0] = new SoundFile(this, "Explosion+1.mp3");
-  explosions[1] = new SoundFile(this, "Explosion+2.mp3");
-  explosions[2] = new SoundFile(this, "Explosion+3.mp3");
-  explosions[3] = new SoundFile(this, "Explosion+4.mp3");
-  explosions[4] = new SoundFile(this, "Explosion+5.mp3");
-  explosions[5] = new SoundFile(this, "Explosion+6.mp3");
-  explosions[6] = new SoundFile(this, "Explosion+7.mp3");
-  explosions[7] = new SoundFile(this, "Explosion+9.mp3");
-  explosions[8] = new SoundFile(this, "Explosion+10.mp3");
-  explosions[9] = new SoundFile(this, "Explosion+11.mp3");
-  gunshot = new SoundFile(this, "Gun+Silencer.mp3");
-  engineAlarm = new SoundFile(this, "beep-07.mp3");
-  
-  size(800,800);
-  background(255,255,255);
-  mouseX = width / 2;
-  mouseY = height / 2;
-  int partWindow = windowSize /8;
-  ship1 = new Ship(0, partWindow, partWindow, color(0,255,0));
-  ship2 = new Ship(1, windowSize - partWindow,windowSize - partWindow, color(255,0,0));
+Missile missile1, missile2;
+Stars theStars;
 
-  createStars();
-  noise.amp(0.5);
-  gamePaused = false;
-
-}
-
-void draw()
-{
-  background(0,0,0);
-  pushMatrix();
-  translate(windowSize/2, windowSize / 2);
-  drawSun(25);  
-  popMatrix();
-  drawStars();
-  stats.render(ship1,ship2);
-  
-  if (ship1.hitOtherShip(ship2)) {
-    ship1.blowUp();
-    ship2.blowUp();
-  }
-  
-  if (ship1.onALiveBullet(ship2)) {
-    ship2.blowUp();
-    ship1.addPoints(1);
-  }
-  
-  if (ship2.onALiveBullet(ship1)) {
-    ship1.blowUp();
-    ship2.addPoints(1);
-  }
-  
-  ship1.checkBulletsCollide(ship2);
-  
-  if (!gamePaused) {
-    ship1.update();
-  }
-  ship1.render();  
-  
-  if (!gamePaused) {
-    ship2.update();
-  }
-  ship2.render(); 
-  
-}
+// =-=-==-=-==-=-==-=-==-=-==-=-= UTILITY FUNCTIONS =-=-==-=-==-=-==-=-==-=-==-=-=
 
 void keyPressed() {  
  switch (key) {
@@ -131,6 +59,9 @@ void keyPressed() {
    case 'd':
     ship1.startTurning(1);
     break;
+   case 'e':
+    ship1.fireMissile();
+    break;
    case 'k':
     ship2.applyThrust();
     break;
@@ -142,6 +73,9 @@ void keyPressed() {
      break;
    case 'l':
     ship2.startTurning(1);
+    break;   
+    case 'u':
+    ship2.fireMissile();
     break;
   } 
     
@@ -205,29 +139,89 @@ PVector calculateGravityForce(PVector pos, float mass) {
   return gravityVector;
 }
  
- 
-void createStars() {
-  for (int i = 0; i < numStars; ++i) {
-    stars[i] = new PVector (random(0,windowSize), random (0, windowSize));
-  }
+// see: https://www.euclideanspace.com/maths/algebra/vectors/angleBetween/
+float angleBetweenVectors(PVector v1, PVector v2) {
+  float dp = v1.dot(v2);
+  float denom = v1.mag() * v2.mag();
+  float angle = acos(dp/denom);
+  return degrees(angle);
 }
 
-void drawStars() {
-  float flicker;
-  for (int i = 0; i < numStars; ++i) {
-    flicker = (random(0,5) / 10) + 0.5;
-    stroke(150 * flicker, 150 * flicker, 255 * flicker);
-    point(stars[i].x, stars[i].y);
-  }
+
+
+// =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE =-=-==-=-==-=-==-=-==-=-==-=-=
+
+void setup()
+{
+  stats = new Stats();
+  theStars = new Stars();
+  missile1 = new Missile();
+  missile2 = new Missile();
+
+  // Load a soundfile from the /data folder of the sketch and play it back
+  explosions = new SoundFile[10];
+  explosions[0] = new SoundFile(this, "Explosion+1.mp3");
+  explosions[1] = new SoundFile(this, "Explosion+2.mp3");
+  explosions[2] = new SoundFile(this, "Explosion+3.mp3");
+  explosions[3] = new SoundFile(this, "Explosion+4.mp3");
+  explosions[4] = new SoundFile(this, "Explosion+5.mp3");
+  explosions[5] = new SoundFile(this, "Explosion+6.mp3");
+  explosions[6] = new SoundFile(this, "Explosion+7.mp3");
+  explosions[7] = new SoundFile(this, "Explosion+9.mp3");
+  explosions[8] = new SoundFile(this, "Explosion+10.mp3");
+  explosions[9] = new SoundFile(this, "Explosion+11.mp3");
+  gunshot = new SoundFile(this, "Gun+Silencer.mp3");
+  engineAlarm = new SoundFile(this, "beep-07.mp3");
+  
+  size(800,800);
+  background(255,255,255);
+  mouseX = width / 2;
+  mouseY = height / 2;
+  int partWindow = windowSize /8;
+  ship1 = new Ship(0, partWindow, partWindow, color(0,255,0));
+  ship2 = new Ship(1, windowSize - partWindow,windowSize - partWindow, color(255,0,0));
+
+  noise.amp(0.5);
+  gamePaused = false;
+
 }
 
-void drawSun(float size) {
-  fill(255,255, 0);
-  stroke(255,205,0);
-  int fc = frameCount;
-  int mod = 30;
-  float modF = 105.0;
-  float pulse = ((fc % mod) / modF) + 1.0;
-  //println((fc % 10) / 10.0);
-  ellipse(0,0,size * pulse,size * pulse);
+void draw()
+{
+  background(0,0,0);
+  theStars.render();
+  theStars.renderSun(25);
+  stats.render(ship1,ship2);
+  
+  if (ship1.hitOtherShip(ship2)) {
+    ship1.blowUp();
+    ship2.blowUp();
+  }
+  
+  if (ship1.onALiveBullet(ship2)) {
+    ship2.blowUp();
+    ship1.addPoints(1);
+  }
+  
+  if (ship2.onALiveBullet(ship1)) {
+    ship1.blowUp();
+    ship2.addPoints(1);
+  }
+  
+  ship1.checkBulletsCollide(ship2);
+  
+  if (!gamePaused) {
+    ship1.update();
+  }
+  ship1.render();  
+  
+  if (!gamePaused) {
+    ship2.update();
+  }
+  ship2.render(); 
+  
+  missile1.update();
+  missile1.render();
+  missile2.update();
+  missile2.render();
 }
