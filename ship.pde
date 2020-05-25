@@ -13,7 +13,7 @@ class Ship {
   float accelFactor;
   int numBullets = 5;
   float mass = 1.0;
-  float tooHotEngineTemp = 300;
+  float tooHotEngineTemp = 350;
   boolean thrustOn;
   PVector startPos;
   float engineHeatConstant = 3.5;
