@@ -6,7 +6,7 @@ class Ship {
   color shipColor;
   int shipId;
   int score;
-  int shipState; // 0 == visible, 1 == in hyperspace (not drawn), 2 == exploding (not drawn)
+  int shipState; // 0 == visible, 1 == in hyperspace (not drawn), 2 == exploding (not drawn), 3 == overheated
   int shipStateTimeout; // counter for how long ships stay in hyperspace (or are exploding)
   int engineTemp; // how hot your engine is getting. Don't go too high!
   float rot, rotChange, rotIncrement;
@@ -16,7 +16,9 @@ class Ship {
   float tooHotEngineTemp = 300;
   boolean thrustOn;
   PVector startPos;
+  float engineHeatConstant = 3.5;
   Bullet[] bullets;
+  Explosion shipExplosion;
   
   Ship(int id, float x, float y, color sColor) {
     score = 0;
@@ -35,11 +37,12 @@ class Ship {
     accelFactor = 0.009;
     shipId = id;
     shipState = 0; // visible
-    friction = 0.9995; // even in outer space, you slow down! whaaaa?
+    friction = 0.9998; // even in outer space, you slow down! whaaaa?
     bullets = new Bullet[numBullets];
     for (int i = 0; i < numBullets; ++i) {
       bullets[i] = new Bullet(shipColor);
     }
+    shipExplosion = new Explosion(this);
   }
   
   int getScore(){
@@ -49,6 +52,11 @@ class Ship {
   int getShipState() {
     return shipState;
   }
+  
+  void setShipState(int newShipState) {
+    shipState = newShipState;
+  }
+  
   int getEngineTemp() {
     return engineTemp;
   }
@@ -81,7 +89,7 @@ class Ship {
   }
   
   void goIntoHyperspace() {
-    shipState = 1; // ship is now in hyperspace
+    setShipState(1); // ship is now in hyperspace
     shipStateTimeout = 100; // how long ship stays in hyperspace
     pos.x = random(width);
     pos.y = random(height);
@@ -92,7 +100,7 @@ class Ship {
       accel.x = sin(radians(rot)) * accelFactor;
       accel.y = -cos(radians(rot)) * accelFactor;
       noise.play();
-      engineTemp += 4;
+      engineTemp += engineHeatConstant;
     } else { 
       engineTemp = max (0,engineTemp - 1);
     }
@@ -113,7 +121,7 @@ class Ship {
       // you overheated, you die!
       blowUp();
       addPoints(-1);
-      shipState = 2; // exploding
+      setShipState(3); // overheat
       shipStateTimeout = 100;
     }    
     
@@ -185,12 +193,14 @@ class Ship {
   }
   
   void blowUp() {
-    playRandomExplosionSound();
+    setShipState(2);
+    shipExplosion.start(this);
     pos.x = startPos.x;
     pos.y = startPos.y;
     vel.x = 0;
     vel.y = 0;
     engineTemp = 0;
+    playRandomExplosionSound();
   }
   
   void fireBullet() {
@@ -203,6 +213,7 @@ class Ship {
   }
   
   void render() {
+    shipExplosion.render(); // if an explosion is live, render it
     if (shipState != 0) { // if ship is not visible, don't draw anything (e.g. in hyperspace or exploding)
       shipStateTimeout -= 1;
       if (shipStateTimeout == 0) {
@@ -212,18 +223,16 @@ class Ship {
       }
     }
     
-    pushMatrix();
+   pushMatrix();
     translate(pos.x,pos.y);
     rotate(radians(rot));
-    float halfHeight = shipHeight / 2;
-    float halfWidth = shipWidth / 2;
     fill(0);
     stroke(shipColor);
     beginShape();
-    vertex(-halfWidth,  halfHeight);
-    vertex(0,  -halfHeight);
-    vertex(halfWidth,  halfHeight);
-    vertex(0, halfHeight / 2);
+    vertex(-halfShipWidth,  halfShipHeight);
+    vertex(0,  -halfShipHeight);
+    vertex(halfShipWidth,  halfShipHeight);
+    vertex(0, halfShipHeight / 2);
     endShape(CLOSE);
     if (thrustOn) {
       // draw flames
@@ -231,10 +240,10 @@ class Ship {
       fill(255 * flicker,255 * flicker,0);
       stroke(255 * flicker,255 * flicker,0);
       beginShape();
-      vertex(-halfWidth / 2, halfHeight * 1.1);
-      vertex(0, halfHeight * 1.6 * flicker);
-      vertex(halfWidth / 2, halfHeight * 1.1);
-      vertex(0, halfHeight * 1.4);
+      vertex(-halfShipWidth / 2, halfShipHeight * 1.1);
+      vertex(0, halfShipHeight * 1.6 * flicker);
+      vertex(halfShipWidth / 2, halfShipHeight * 1.1);
+      vertex(0, halfShipHeight * 1.4);
       endShape(CLOSE);
     }
     popMatrix();

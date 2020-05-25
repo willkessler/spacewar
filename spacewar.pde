@@ -24,6 +24,9 @@ int windowSize = 800;
 int numStars = 100;
 float shipWidth = 15;
 float shipHeight = shipWidth * 1.5;
+float halfShipHeight = shipHeight / 2;
+float halfShipWidth = shipWidth / 2;
+
 boolean gamePaused;
 
 PVector[] stars = new PVector[numStars];
@@ -34,7 +37,7 @@ Ship ship1, ship2;
 void setup()
 {
   stats = new Stats();
-  Missile oneMissile = new Missile();
+  //Missile oneMissile = new Missile();
   // Load a soundfile from the /data folder of the sketch and play it back
   explosions = new SoundFile[10];
   explosions[0] = new SoundFile(this, "Explosion+1.mp3");
@@ -57,6 +60,7 @@ void setup()
   int partWindow = windowSize /8;
   ship1 = new Ship(0, partWindow, partWindow, color(0,255,0));
   ship2 = new Ship(1, windowSize - partWindow,windowSize - partWindow, color(255,0,0));
+
   createStars();
   noise.amp(0.5);
   gamePaused = false;

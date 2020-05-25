@@ -28,24 +28,27 @@ class Stats {
     
   }
   
+   void renderShipStatus(Ship ship) {
+     // display status messages! e.g. hyperspace, destroyed, overheat
+     String[] displays = { " ", "Hyperspace!", "Destroyed!", "Overheated!" };
+     int leftOffset = ship.shipId == 0 ? 10 : width - 120;
+     fill(ship.getShipColor());
+     text(displays[ship.getShipState()], leftOffset, 40);
+   }
+
+  
   void render(Ship ship1, Ship ship2) {
    textFont(f);
     // player 1 score
    fill(0,255,0);
-   text("Player 1:" + ship1.getScore(),20,20);
+   text("Player 1: " + ship1.getScore(),10,20);
    // player 2 score
     fill(255,0,0);
-    text("Player2:" + ship2.getScore(),width - 120,20);
+    text("Player2: " + ship2.getScore(),width - 120,20);
     
     
-    // display engine overheat messages!
-    
-    if (ship1.getShipState() == 1) {
-      fill(0,255,0);
-      text("Hyperspace!", 20, 40);
-       fill(255,0,0);
-      text("Hyperspace!", width - 120, 40);
-    }
+   renderShipStatus(ship1);
+   renderShipStatus(ship2);
     
     renderEngineTemp(ship1);
     renderEngineTemp(ship2);
