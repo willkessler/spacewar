@@ -9,8 +9,8 @@
 // X improve missile display
 // X missile explosion sound in sun
 // X orientation must track its velocity vector
+// X shoot missile with bullets! very important
 // thrust display on missiles
-// shoot missile with bullets! very important
 // missile explosion
 // when missiles "die" play sound
 // run out of fuel becuase missile is stupid
@@ -31,7 +31,7 @@ class Missile {
   float enemyAngleTolerance = 360;
   float mass = .4;
   float missileLaunchForce = 1;
-  float missileSmartFactor = 0.035;
+  float missileSmartFactor = 0.038;
   float maxSpeed = 3;
   float halfMissileWidth = halfShipWidth * 0.4;
   float halfMissileHeight = halfShipHeight * .8;
