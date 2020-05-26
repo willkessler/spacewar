@@ -28,11 +28,11 @@ boolean gamePaused;
 SoundFile[] explosions;
 SoundFile gunshot;
 SoundFile engineAlarm;
+SoundFile missileShot;
 Stats stats;
 WhiteNoise noise = new WhiteNoise(this);
 
 Ship ship1, ship2;
-Missile missile1, missile2;
 Stars theStars;
 
 // =-=-==-=-==-=-==-=-==-=-==-=-= UTILITY FUNCTIONS =-=-==-=-==-=-==-=-==-=-==-=-=
@@ -74,7 +74,7 @@ void keyPressed() {
    case 'l':
     ship2.startTurning(1);
     break;   
-    case 'u':
+   case 'u':
     ship2.fireMissile();
     break;
   } 
@@ -147,16 +147,12 @@ float angleBetweenVectors(PVector v1, PVector v2) {
   return degrees(angle);
 }
 
-
-
 // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE =-=-==-=-==-=-==-=-==-=-==-=-=
 
 void setup()
 {
   stats = new Stats();
   theStars = new Stars();
-  missile1 = new Missile();
-  missile2 = new Missile();
 
   // Load a soundfile from the /data folder of the sketch and play it back
   explosions = new SoundFile[10];
@@ -172,6 +168,7 @@ void setup()
   explosions[9] = new SoundFile(this, "Explosion+11.mp3");
   gunshot = new SoundFile(this, "Gun+Silencer.mp3");
   engineAlarm = new SoundFile(this, "beep-07.mp3");
+  missileShot = new SoundFile(this, "Missile+2.mp3");
   
   size(800,800);
   background(255,255,255);
@@ -180,7 +177,9 @@ void setup()
   int partWindow = windowSize /8;
   ship1 = new Ship(0, partWindow, partWindow, color(0,255,0));
   ship2 = new Ship(1, windowSize - partWindow,windowSize - partWindow, color(255,0,0));
-
+  ship1.setEnemyShip(ship2);
+  ship2.setEnemyShip(ship1);
+  
   noise.amp(0.5);
   gamePaused = false;
 
@@ -220,8 +219,4 @@ void draw()
   }
   ship2.render(); 
   
-  missile1.update();
-  missile1.render();
-  missile2.update();
-  missile2.render();
 }

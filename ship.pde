@@ -19,6 +19,7 @@ class Ship {
   float engineHeatConstant = 3.5;
   Bullet[] bullets;
   Explosion shipExplosion;
+  Missile missile;
   
   Ship(int id, float x, float y, color sColor) {
     score = 0;
@@ -43,6 +44,7 @@ class Ship {
       bullets[i] = new Bullet(shipColor);
     }
     shipExplosion = new Explosion(this);
+    missile = new Missile(this);
   }
  
 // =-=-==-=-==-=-==-=-==-=-==-=-= UTILITY METHODS =-=-==-=-==-=-==-=-==-=-==-=-=
@@ -57,6 +59,10 @@ class Ship {
   
   void setShipState(int newShipState) {
     shipState = newShipState;
+  }
+  
+  void setEnemyShip(Ship enemy) {
+    missile.setEnemyShip(enemy);
   }
   
   int getEngineTemp() {
@@ -78,6 +84,7 @@ class Ship {
   
   void fireMissile() {
     println("Missile for ship " + shipId + " is away!");
+    missile.fire();    
   }
   
   void checkBulletsCollide(Ship otherShip) {
@@ -146,7 +153,9 @@ class Ship {
   }
   
   void applyThrust() {
-    thrustOn = true;
+    if (shipState == 0) { // can't accelerate if not alive
+      thrustOn = true;
+    }
   }
 
   void cancelThrust() {
@@ -172,9 +181,14 @@ class Ship {
     vel.y = 0;
     engineTemp = 0;
     playRandomExplosionSound();
+    cancelThrust();
   }
   
   void fireBullet() {
+    if (missile.isLive()) {
+      return; // can't fire bullets while your missile is away!
+    }
+    
     for (Bullet bullet: bullets) {
       if (!bullet.isLive()) {
         bullet.fire(pos,vel,rot);
@@ -222,6 +236,9 @@ class Ship {
   
   void render() {
     shipExplosion.render(); // if an explosion is live, render it
+    renderBullets();
+    missile.update();
+    missile.render();
     if (shipState != 0) { // if ship is not visible, don't draw anything (e.g. in hyperspace or exploding)
       shipStateTimeout -= 1;
       if (shipStateTimeout == 0) {
@@ -256,6 +273,5 @@ class Ship {
     }
     popMatrix();
     
-    renderBullets();
-  }
+   }
 }
