@@ -152,6 +152,18 @@ class Ship {
       }
     }
     return false;
+  }
+  
+   boolean missileOnALiveBullet(Ship opponentShip) {
+    for (Bullet bullet : bullets) {
+      if (bullet.isLive()) {
+        if (bullet.collides(opponentShip.missile.getMissilePos(), bullet.shipBulletCollisionTolerance)) {
+          bullet.die();
+          return true;
+        }
+      }
+    }
+    return false;
   } 
  
   boolean engineGettingTooHot() {

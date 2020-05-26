@@ -225,6 +225,14 @@ void draw()
     ship1.killMissile();
   }
 
+   if (ship1.missileOnALiveBullet(ship2)) {
+    ship2.killMissile();
+  }
+  
+  if (ship2.missileOnALiveBullet(ship1)) {
+    ship1.killMissile();
+  }
+ 
   ship1.checkBulletsCollide(ship2);
   
   if (!gamePaused) {
