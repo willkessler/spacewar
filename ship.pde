@@ -20,6 +20,8 @@ class Ship {
   Bullet[] bullets;
   Explosion shipExplosion;
   Missile missile;
+  int hyperspaceTimeLimit = 500; // number of draw cycles before you can do another hyperspace
+  int hyperspaceCountdown;
   
   Ship(int id, float x, float y, color sColor) {
     score = 0;
@@ -83,7 +85,7 @@ class Ship {
   }
   
   void fireMissile() {
-    println("Missile for ship " + shipId + " is away!");
+    //println("Missile for ship " + shipId + " is away!");
     missile.fire();    
   }
   
@@ -106,10 +108,18 @@ class Ship {
   }
   
   void goIntoHyperspace() {
-    setShipState(1); // ship is now in hyperspace
-    shipStateTimeout = 100; // how long ship stays in hyperspace
-    pos.x = random(width);
-    pos.y = random(height);
+    if (hyperspaceCountdown == 0) {
+      setShipState(1); // ship is now in hyperspace
+      shipStateTimeout = 100; // how long ship stays in hyperspace
+      pos.x = random(width);
+      pos.y = random(height);
+      hyperspaceCountdown = hyperspaceTimeLimit;
+    }    
+  }
+  
+  void updateHyperspaceCountdown() {
+    hyperspaceCountdown = max(0, hyperspaceCountdown - 1);
+    //println("shipid", shipId, "hyperspace ct", hyperspaceCountdown);
   }
   
   void updateBullets() {
@@ -174,13 +184,10 @@ class Ship {
   boolean hitOtherShipsMissile(Ship otherShip) {
     PVector missilePos = otherShip.missile.getMissilePos();
     boolean impact = (((abs(pos.x - missilePos.x) < 10) && (abs(pos.y - missilePos.y) < 10)));
-    return impact;
+    return impact && otherShip.missile.isLive();
   }
 
-  void playRandomExplosionSound() {
-    int randomExplosionSound = int(random(10));
-    explosions[randomExplosionSound].play();
-  }
+
   
   void blowUp() {
     setShipState(2);
@@ -210,6 +217,7 @@ class Ship {
 // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE FOR SHIPS =-=-==-=-==-=-==-=-==-=-==-=-= 
   
   void update() {
+    updateHyperspaceCountdown();
     if (thrustOn) {
       accel.x = sin(radians(rot)) * accelFactor;
       accel.y = -cos(radians(rot)) * accelFactor;

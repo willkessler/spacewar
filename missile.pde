@@ -6,6 +6,7 @@
 // X gravitational pull applies
 // X track ship
 // X collide with ship
+// improve missile display
 // shoot missile with bullets! very important
 // missile explosion
 // missile explosion sound in sun
@@ -29,6 +30,9 @@ class Missile {
   float mass = .4;
   float missileLaunchForce = 1; 
   float maxSpeed = 3;
+  float halfMissileWidth = halfShipWidth * 0.4;
+  float halfMissileHeight = halfShipHeight * .8;
+
   
   Missile(Ship ship) {
     fuel = 1000;
@@ -68,9 +72,7 @@ class Missile {
                       sa * vel.x + ca * vel.y);  
        adjustment.normalize();
        adjustment.mult(.05);
-       // Pass the adjustment direction back in its z value so we can rotate the missile
-       adjustment.z = crossProduct.z <= 0 ? -1 : 1;
-       println("  Adjustment vector:", adjustment);
+       // println("  Adjustment vector:", adjustment);
     }
     return adjustment;
   }
@@ -99,7 +101,8 @@ class Missile {
   
   void die() {
     live = false;
-  }
+    playRandomExplosionSound();
+ }
   
   boolean isLive () {
     return live;
@@ -120,20 +123,25 @@ class Missile {
     accel.add(calculateGravityForce(pos,mass));
     
     PVector enemyShipDirection = calculateEnemyShipDirection();
-    // we stuff the angle diff into the z value so we can return it in a single call to this function, but
-    // we use it to adjust the ship's orientation
-    PVector zeroAngleVec = new PVector(1,0);
-    rot = angleBetweenVectors(zeroAngleVec, vel);
-    rot += 90;
-    //rot *= enemyShipDirection.z;
-    enemyShipDirection.z = 0;
+    PVector currentPos = new PVector();
+    // save the current position so after we move we can align a ship along a vector
+    // between the current position and the newly calculated position.
+    currentPos.set(pos); 
     
     accel.add(enemyShipDirection); // try to track enemy ship
     vel.add(accel);
     vel.limit(maxSpeed);
     pos.add(vel);
+
+    // align the missile along its path
+    PVector shipMotionVec = new PVector();
+    shipMotionVec.set(pos.x,pos.y);
+    shipMotionVec.sub(currentPos);
+    shipMotionVec.normalize();
+    rot = degrees(atan2(shipMotionVec.y, shipMotionVec.x)) - 90;
+        
     if (insideSun(pos)) {
-       live = false;
+       die();
     }
     wrapAroundEdges(pos);
 
@@ -148,12 +156,21 @@ class Missile {
   void render() {
     if (live) {
       //println("Missile away at : ", pos);
-      fill(parent.shipColor);
+      fill(0);
       stroke(parent.shipColor);
       pushMatrix();
       translate(pos.x,pos.y);
       rotate(radians(rot));
-      rect(-2,-15,4,30);
+      
+      beginShape();
+      vertex(-halfMissileWidth,  -halfMissileHeight);
+      vertex(-halfMissileWidth,  halfMissileHeight);
+      vertex(0, halfMissileHeight * 1.4);
+      vertex(halfMissileWidth, halfMissileHeight);
+      vertex(halfMissileWidth, -halfMissileHeight);
+      vertex(0, -halfMissileHeight * 0.7);
+      endShape(CLOSE);
+      // rect(-2,-15,4,30);
       popMatrix();
     }    
   }

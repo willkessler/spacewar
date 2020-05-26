@@ -11,9 +11,9 @@
 // X bullet collisions 
 // X explosion animation
 // X improved stats: display "Overheated", "Destroyed", "Hit the sun!"
+// X hyperspace time limit
 // heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
 // orbiting planet
-// hyperspace time limit
 // keys legend at bottom of screen
 
 import processing.sound.*;
@@ -145,6 +145,11 @@ float angleBetweenVectors(PVector v1, PVector v2) {
   float denom = v1.mag() * v2.mag();
   float angle = acos(dp/denom);
   return degrees(angle);
+}
+
+void playRandomExplosionSound() {
+  int randomExplosionSound = int(random(10));
+  explosions[randomExplosionSound].play();
 }
 
 // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE =-=-==-=-==-=-==-=-==-=-==-=-=
