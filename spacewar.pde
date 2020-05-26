@@ -197,6 +197,7 @@ void draw()
     ship2.blowUp();
   }
   
+  
   if (ship1.onALiveBullet(ship2)) {
     ship2.blowUp();
     ship1.addPoints(1);
@@ -207,6 +208,18 @@ void draw()
     ship2.addPoints(1);
   }
   
+  if (ship1.hitOtherShipsMissile(ship2)) {
+    ship1.blowUp();
+    ship2.addPoints(1);
+    ship2.killMissile();
+  }
+  
+  if (ship2.hitOtherShipsMissile(ship1)) {
+    ship2.blowUp();
+    ship1.addPoints(1);
+    ship1.killMissile();
+  }
+
   ship1.checkBulletsCollide(ship2);
   
   if (!gamePaused) {

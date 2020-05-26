@@ -4,9 +4,11 @@
 // X fire missile
 // X hit sun and dies
 // X gravitational pull applies
-// track ship
-// collide with ship
+// X track ship
+// X collide with ship
+// shoot missile with bullets! very important
 // missile explosion
+// missile explosion sound in sun
 // orientation must track its velocity vector
 // run out of fuel becuase missile is stupid
 // collisions with other missiles
@@ -18,13 +20,13 @@ class Missile {
   float fuel;
   boolean live;
   int ttl;
-  int lifeSpan = 500;
+  int lifeSpan = 800;
   float rot; // where the missile is facing
   Ship parent;
   Ship enemyShip;
   float enemyRange = windowSize;
   float enemyAngleTolerance = 360;
-  float mass = .3;
+  float mass = .4;
   float missileLaunchForce = 1; 
   float maxSpeed = 3;
   
@@ -34,6 +36,10 @@ class Missile {
     vel = new PVector(0,0);
     accel = new PVector(0,0);
     parent = ship;
+  }
+  
+  PVector getMissilePos() {
+    return pos;
   }
   
   // calculate if the enemy ship is near enough to "see" and in front of the missile. Return a zero vector is not.
@@ -110,12 +116,15 @@ class Missile {
     if (enemyShip.getShipState() != 0) {
       die();
     }
-    //accel.add(calculateGravityForce(pos,mass));
+    
+    accel.add(calculateGravityForce(pos,mass));
+    
     PVector enemyShipDirection = calculateEnemyShipDirection();
     // we stuff the angle diff into the z value so we can return it in a single call to this function, but
     // we use it to adjust the ship's orientation
     PVector zeroAngleVec = new PVector(1,0);
-    rot = angleBetweenVectors(vel, zeroAngleVec);
+    rot = angleBetweenVectors(zeroAngleVec, vel);
+    rot += 90;
     //rot *= enemyShipDirection.z;
     enemyShipDirection.z = 0;
     

@@ -87,6 +87,10 @@ class Ship {
     missile.fire();    
   }
   
+  void killMissile() {
+    missile.die();
+  }
+  
   void checkBulletsCollide(Ship otherShip) {
     for (Bullet bullet1 : bullets) {
       for (Bullet bullet2 : otherShip.bullets) {
@@ -167,6 +171,12 @@ class Ship {
     return (((abs(pos.x - otherShip.pos.x) < 10) && (abs(pos.y - otherShip.pos.y) < 10)));
   }
   
+  boolean hitOtherShipsMissile(Ship otherShip) {
+    PVector missilePos = otherShip.missile.getMissilePos();
+    boolean impact = (((abs(pos.x - missilePos.x) < 10) && (abs(pos.y - missilePos.y) < 10)));
+    return impact;
+  }
+
   void playRandomExplosionSound() {
     int randomExplosionSound = int(random(10));
     explosions[randomExplosionSound].play();
