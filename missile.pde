@@ -6,11 +6,13 @@
 // X gravitational pull applies
 // X track ship
 // X collide with ship
-// improve missile display
+// X improve missile display
+// X missile explosion sound in sun
+// X orientation must track its velocity vector
+// thrust display on missiles
 // shoot missile with bullets! very important
 // missile explosion
-// missile explosion sound in sun
-// orientation must track its velocity vector
+// when missiles "die" play sound
 // run out of fuel becuase missile is stupid
 // collisions with other missiles
 // missile explodes near ship, it blows up
@@ -21,14 +23,15 @@ class Missile {
   float fuel;
   boolean live;
   int ttl;
-  int lifeSpan = 800;
+  int lifeSpan = 600;
   float rot; // where the missile is facing
   Ship parent;
   Ship enemyShip;
-  float enemyRange = windowSize;
+  float enemyRange = windowSize; // can track you over entire screen right now
   float enemyAngleTolerance = 360;
   float mass = .4;
-  float missileLaunchForce = 1; 
+  float missileLaunchForce = 1;
+  float missileSmartFactor = 0.035;
   float maxSpeed = 3;
   float halfMissileWidth = halfShipWidth * 0.4;
   float halfMissileHeight = halfShipHeight * .8;
@@ -71,7 +74,7 @@ class Missile {
        adjustment.set(ca * vel.x - sa * vel.y,
                       sa * vel.x + ca * vel.y);  
        adjustment.normalize();
-       adjustment.mult(.05);
+       adjustment.mult(missileSmartFactor);
        // println("  Adjustment vector:", adjustment);
     }
     return adjustment;
