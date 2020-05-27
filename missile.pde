@@ -12,9 +12,9 @@
 // X shoot missile with bullets! very important
 // thrust display on missiles
 // missile explosion
-// when missiles "die" play sound
-// run out of fuel becuase missile is stupid
-// collisions with other missiles
+// when missiles "die" because they time out, play explosion but fizzle
+// run out of fuel becuase missile is stupid (? do they stop tracking and just fly for a while?)
+// collisions with the other missile
 // missile explodes near ship, it blows up
 
 class Missile {
@@ -33,9 +33,8 @@ class Missile {
   float missileLaunchForce = 1;
   float missileSmartFactor = 0.038;
   float maxSpeed = 3;
-  float halfMissileWidth = halfShipWidth * 0.4;
+  float halfMissileWidth = halfShipWidth * 0.3;
   float halfMissileHeight = halfShipHeight * .8;
-
   
   Missile(Ship ship) {
     fuel = 1000;
@@ -165,6 +164,7 @@ class Missile {
       translate(pos.x,pos.y);
       rotate(radians(rot));
       
+      // main body of missile
       beginShape();
       vertex(-halfMissileWidth,  -halfMissileHeight);
       vertex(-halfMissileWidth,  halfMissileHeight);
@@ -173,7 +173,13 @@ class Missile {
       vertex(halfMissileWidth, -halfMissileHeight);
       vertex(0, -halfMissileHeight * 0.7);
       endShape(CLOSE);
-      // rect(-2,-15,4,30);
+      // fin1
+      line(-halfMissileWidth, -halfMissileHeight, -halfMissileWidth * 1.5, -halfMissileHeight * 1.4);
+      line(-halfMissileWidth * 1.5, -halfMissileHeight * 1.4,-halfMissileWidth, -halfMissileHeight * 0.85);
+      // fin2
+      line(halfMissileWidth, -halfMissileHeight, halfMissileWidth * 1.5, -halfMissileHeight * 1.4);
+      line(halfMissileWidth * 1.5, -halfMissileHeight * 1.4,halfMissileWidth, -halfMissileHeight * 0.85);
+     // rect(-2,-15,4,30);
       popMatrix();
     }    
   }

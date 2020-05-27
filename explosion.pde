@@ -1,6 +1,5 @@
 // animate
 // die off
-// no where near done!
 
 class Explosion {
   PVector pos, vel;
