@@ -34,6 +34,7 @@ WhiteNoise noise = new WhiteNoise(this);
 
 Ship ship1, ship2;
 Stars theStars;
+Planet thePlanet;
 
 // =-=-==-=-==-=-==-=-==-=-==-=-= UTILITY FUNCTIONS =-=-==-=-==-=-==-=-==-=-==-=-=
 
@@ -158,6 +159,7 @@ void setup()
 {
   stats = new Stats();
   theStars = new Stars();
+  thePlanet = new Planet();
 
   // Load a soundfile from the /data folder of the sketch and play it back
   explosions = new SoundFile[10];
@@ -196,12 +198,13 @@ void draw()
   theStars.render();
   theStars.renderSun(25);
   stats.render(ship1,ship2);
+  thePlanet.update();
+  thePlanet.render();
   
   if (ship1.hitOtherShip(ship2)) {
     ship1.blowUp();
     ship2.blowUp();
   }
-  
   
   if (ship1.onALiveBullet(ship2)) {
     ship2.blowUp();
@@ -234,6 +237,14 @@ void draw()
   }
  
   ship1.checkBulletsCollide(ship2);
+  
+  if (thePlanet.collides(ship1.pos)) {
+    ship1.blowUp();
+  }
+  
+  if (thePlanet.collides(ship2.pos)) {
+    ship2.blowUp();
+  }
   
   if (!gamePaused) {
     ship1.update();

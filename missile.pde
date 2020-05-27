@@ -142,7 +142,7 @@ class Missile {
     shipMotionVec.normalize();
     rot = degrees(atan2(shipMotionVec.y, shipMotionVec.x)) - 90;
         
-    if (insideSun(pos)) {
+    if (insideSun(pos) || thePlanet.collides(pos)) {
        die();
     }
     wrapAroundEdges(pos);
