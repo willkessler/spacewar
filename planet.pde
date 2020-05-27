@@ -5,17 +5,17 @@
 class Planet {
 
   PVector pos, vel,accel;
-  float radius = 30;
+  float radius = 20;
   color planetColor;
-  float mass = 2;
-  float maxSpeed = 2;
+  float mass = 0.4;
+  float maxSpeed = 1;
   float innerSpin = 1, innerSpinInc = 0.1;
-  float collisionTolerance = radius;
+  float collisionTolerance = radius * .8;
     
   Planet() {
     planetColor = color(40,40,255);
     float orbitDistance = random(150,200);
-    float orbitalVelocity = random(-45,-15);
+    float orbitalVelocity = random(-110,-85);
     pos = new PVector(windowSize /2 + orbitDistance, windowSize/2);
     vel = new PVector(0,orbitalVelocity);
     accel = new PVector(0,0);
@@ -36,6 +36,7 @@ class Planet {
   }
   
   void render() {
+    lights();
     pushMatrix();
     translate(pos.x,pos.y);
     fill(planetColor);
@@ -45,6 +46,9 @@ class Planet {
     noFill();
     ellipse(0,0,radius * innerSpin / 10, radius);
     ellipse(0,0,radius * innerSpin / 10 - 10, radius);
+    //noStroke();
+    //stroke(255);
+    //sphere(radius);
     popMatrix();
     
     innerSpin = innerSpin + innerSpinInc;
