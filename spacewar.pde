@@ -163,7 +163,7 @@ void setup()
   theStars = new Stars();
   thePlanet = new Planet();
   
-println("this sh workoud ");
+println("this should have worked out ");
 
   // Load a soundfile from the /data folder of the sketch and play it back
   explosions = new SoundFile[10];
