@@ -5,7 +5,7 @@
 class Planet {
 
   PVector pos, vel,accel;
-  float radius = 20;
+  float radius = 30;
   color planetColor;
   float mass = 0.4;
   float maxSpeed = 1;
@@ -36,7 +36,6 @@ class Planet {
   }
   
   void render() {
-    lights();
     pushMatrix();
     translate(pos.x,pos.y);
     fill(planetColor);

@@ -16,6 +16,7 @@
 // heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
 // orbiting planet
 
+
 import processing.sound.*;
 
 int windowSize = 800;
@@ -35,6 +36,7 @@ WhiteNoise noise = new WhiteNoise(this);
 Ship ship1, ship2;
 Stars theStars;
 Planet thePlanet;
+int killPoints = 10;
 
 // =-=-==-=-==-=-==-=-==-=-==-=-= UTILITY FUNCTIONS =-=-==-=-==-=-==-=-==-=-==-=-=
 
@@ -208,23 +210,23 @@ void draw()
   
   if (ship1.onALiveBullet(ship2)) {
     ship2.blowUp();
-    ship1.addPoints(1);
+    ship1.addPoints(killPoints);
   }
   
   if (ship2.onALiveBullet(ship1)) {
     ship1.blowUp();
-    ship2.addPoints(1);
+    ship2.addPoints(killPoints);
   }
   
   if (ship1.hitOtherShipsMissile(ship2)) {
     ship1.blowUp();
-    ship2.addPoints(1);
+    ship2.addPoints(killPoints);
     ship2.killMissile();
   }
   
   if (ship2.hitOtherShipsMissile(ship1)) {
     ship2.blowUp();
-    ship1.addPoints(1);
+    ship1.addPoints(killPoints);
     ship1.killMissile();
   }
 
@@ -240,10 +242,12 @@ void draw()
   
   if (thePlanet.collides(ship1.pos)) {
     ship1.blowUp();
+    ship1.addPoints(-killPoints);
   }
   
   if (thePlanet.collides(ship2.pos)) {
     ship2.blowUp();
+    ship2.addPoints(-killPoints);
   }
   
   if (!gamePaused) {

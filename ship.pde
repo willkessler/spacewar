@@ -250,11 +250,11 @@ class Ship {
     wrapAroundEdges(pos);
     if (insideSun(pos)) {
       blowUp();
-      addPoints(-1);
+      addPoints(-killPoints);
     } else if (engineTemp > tooHotEngineTemp) {
       // you overheated, you die!
       blowUp();
-      addPoints(-1);
+      addPoints(-killPoints);
       setShipState(3); // overheat
       shipStateTimeout = 100;
     }    
