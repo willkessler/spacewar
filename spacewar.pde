@@ -12,9 +12,9 @@
 // X explosion animation
 // X improved stats: display "Overheated", "Destroyed", "Hit the sun!"
 // X hyperspace time limit
+// X orbiting planet
 // keys legend at bottom of screen
 // heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
-// orbiting planet
 
 
 import processing.sound.*;

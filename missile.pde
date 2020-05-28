@@ -10,7 +10,7 @@
 // X missile explosion sound in sun
 // X orientation must track its velocity vector
 // X shoot missile with bullets! very important
-// thrust display on missiles
+// X thrust display on missiles
 // missile explosion
 // when missiles "die" because they time out, play explosion but fizzle
 // run out of fuel becuase missile is stupid (? do they stop tracking and just fly for a while?)
@@ -31,7 +31,7 @@ class Missile {
   float enemyAngleTolerance = 360;
   float mass = .4;
   float missileLaunchForce = 1;
-  float missileSmartFactor = 0.038;
+  float missileSmartFactor = 0.046;
   float maxSpeed = 3;
   float halfMissileWidth = halfShipWidth * 0.3;
   float halfMissileHeight = halfShipHeight * .8;
@@ -179,7 +179,18 @@ class Missile {
       // fin2
       line(halfMissileWidth, -halfMissileHeight, halfMissileWidth * 1.5, -halfMissileHeight * 1.4);
       line(halfMissileWidth * 1.5, -halfMissileHeight * 1.4,halfMissileWidth, -halfMissileHeight * 0.85);
-     // rect(-2,-15,4,30);
+     
+     float flicker = random(0,10) / 10 + 1; 
+      fill(255 * flicker,255 * flicker,0);
+      stroke(255 * flicker,255 * flicker,0);
+      beginShape();
+      vertex(-halfMissileWidth / 6, -halfMissileHeight * 1.1);
+      vertex(0, -halfMissileHeight * 1.6 * flicker);
+      vertex(-halfMissileWidth / 6, -halfMissileHeight * 1.1);
+      vertex(0, -halfMissileHeight * 1.4);
+      endShape(CLOSE);
+    
+     
       popMatrix();
     }    
   }
