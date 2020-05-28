@@ -10,7 +10,7 @@
 // X missile explosion sound in sun
 // X orientation must track its velocity vector
 // X shoot missile with bullets! very important
-// thrust display on missiles
+// X thrust display on missiles
 // missile explosion
 // when missiles "die" because they time out, play explosion but fizzle
 // run out of fuel becuase missile is stupid (? do they stop tracking and just fly for a while?)
