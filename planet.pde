@@ -1,11 +1,9 @@
 // orbiting planet gets in the way of ships, missiles, etc
-// has its own gravitational pull? 
-// much less gravity than the sun
-
+//no gravity
 class Planet {
 
   PVector pos, vel,accel;
-  float radius = 30;
+  float radius = 25;
   color planetColor;
   float mass = 0.4;
   float maxSpeed = 1;

@@ -162,6 +162,8 @@ void setup()
   stats = new Stats();
   theStars = new Stars();
   thePlanet = new Planet();
+  
+println("this sh workoud ");
 
   // Load a soundfile from the /data folder of the sketch and play it back
   explosions = new SoundFile[10];
@@ -178,6 +180,7 @@ void setup()
   gunshot = new SoundFile(this, "Gun+Silencer.mp3");
   engineAlarm = new SoundFile(this, "beep-07.mp3");
   missileShot = new SoundFile(this, "Missile+2.mp3");
+  //println("does this update git hub?????? ");
   
   size(800,800);
   background(255,255,255);
