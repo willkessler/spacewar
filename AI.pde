@@ -4,3 +4,7 @@
 // in te begining of the game, you can choose between 2-players and vs the AI
 // if only thrusts when it needs to get near the player or away from the planet or sun
 // makes sure to not overheat but sometimes messes up like a human
+
+class AI {
+  
+}
