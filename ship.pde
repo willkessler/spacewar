@@ -13,7 +13,7 @@ class Ship {
   float accelFactor;
   int numBullets = 5;
   float mass = 1.0;
-  float tooHotEngineTemp = 450;
+  float tooHotEngineTemp = 550;
   boolean thrustOn;
   PVector startPos;
   float engineHeatConstant = 3.5;
@@ -198,6 +198,14 @@ class Ship {
     boolean impact = (((abs(pos.x - missilePos.x) < 10) && (abs(pos.y - missilePos.y) < 10)));
     return impact && otherShip.missile.isLive();
   }
+  
+  
+   boolean missileHitOtherShipsMissile(Ship otherShip) {
+     PVector missile1Pos = missile.getMissilePos();
+     PVector missile2Pos = otherShip.missile.getMissilePos();
+     boolean impact = (((abs(missile1Pos.x - missile2Pos.x) < 10) && (abs(missile1Pos.y - missile2Pos.y) < 10)));
+     return impact && missile.isLive() && otherShip.missile.isLive();
+   }
 
 
   
@@ -238,7 +246,8 @@ class Ship {
     } else { 
       engineTemp = max (0,engineTemp - 1);
     }
-    accel.add(calculateGravityForce(pos,mass));
+    accel.add(calculateSunsGravityForce(pos,mass));
+    accel.add(calculatePlanetsGravityForce(pos,mass));
     vel.add(accel);
     vel.mult(friction);
     //if (shipId == 0) {

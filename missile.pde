@@ -23,7 +23,7 @@ class Missile {
   float fuel;
   boolean live;
   int ttl;
-  int lifeSpan = 600;
+  int lifeSpan = 500;
   float rot; // where the missile is facing
   Ship parent;
   Ship enemyShip;
@@ -31,7 +31,7 @@ class Missile {
   float enemyAngleTolerance = 360;
   float mass = .4;
   float missileLaunchForce = 1;
-  float missileSmartFactor = 0.046;
+  float missileSmartFactor = 0.045;
   float maxSpeed = 3;
   float halfMissileWidth = halfShipWidth * 0.3;
   float halfMissileHeight = halfShipHeight * .8;
@@ -122,8 +122,9 @@ class Missile {
       die();
     }
     
-    accel.add(calculateGravityForce(pos,mass));
-    
+    accel.add(calculateSunsGravityForce(pos,mass));
+    accel.add(calculatePlanetsGravityForce(pos,mass));
+   
     PVector enemyShipDirection = calculateEnemyShipDirection();
     PVector currentPos = new PVector();
     // save the current position so after we move we can align a ship along a vector

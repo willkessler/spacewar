@@ -50,7 +50,8 @@ class Bullet {
   }
   
   void update() {
-    accel.add(calculateGravityForce(pos,mass));
+    accel.add(calculateSunsGravityForce(pos,mass));
+    accel.add(calculatePlanetsGravityForce(pos,mass));
     vel.add(accel);
     pos.add(vel);
     if (insideSun(pos) || thePlanet.collides(pos)) {

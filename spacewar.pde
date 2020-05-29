@@ -13,7 +13,8 @@
 // X improved stats: display "Overheated", "Destroyed", "Hit the sun!"
 // X hyperspace time limit
 // X orbiting planet
-// keys legend at bottom of screen
+// X keys legend at bottom of screen
+// X planet has gravity!
 // heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
 
 
@@ -41,7 +42,8 @@ int killPoints = 10;
 // =-=-==-=-==-=-==-=-==-=-==-=-= UTILITY FUNCTIONS =-=-==-=-==-=-==-=-==-=-==-=-=
 
 void keyPressed() {  
- switch (key) {
+ stats.hideInstructions();
+  switch (key) {
    case '0':
    case '1':
      gamePaused = !gamePaused;
@@ -130,15 +132,26 @@ boolean insideSun (PVector pos) {
   return ((abs(halfWindow - pos.x) < 10) && (abs(halfWindow - pos.y) < 10));  
 }
 
-PVector calculateGravityForce(PVector pos, float mass) {
-  PVector sunVector = new PVector(windowSize / 2, windowSize/2);
-  float distToSun = pos.dist(sunVector);
-  PVector shipToSunVector = PVector.sub(sunVector, pos);
-  shipToSunVector.normalize();
-  float G = 32;
-  float gravityFactor = (1.0 / (pow(distToSun, 1.57))) * G * mass;
-  PVector gravityVector = PVector.mult(shipToSunVector, gravityFactor);
+PVector calculateGravityForce(PVector gravityWellPos, PVector pos, float mass, float G) {
+  float distToWell = pos.dist(gravityWellPos);
+  PVector shipToWellVector = PVector.sub(gravityWellPos, pos);
+  shipToWellVector.normalize();
+  float gravityFactor = (1.0 / (pow(distToWell, 1.57))) * G * mass;
+  PVector gravityVector = PVector.mult(shipToWellVector, gravityFactor);
+  return gravityVector;
+}
 
+PVector calculateSunsGravityForce(PVector pos, float mass) {
+  PVector sunPos = new PVector (windowSize / 2, windowSize/2);
+  float G = 32;
+  PVector gravityVector = calculateGravityForce(sunPos, pos, mass, G);
+  return gravityVector;
+}
+
+PVector calculatePlanetsGravityForce(PVector pos, float mass) {
+  PVector planetPos = thePlanet.getPlanetPos();
+ float G = 16;
+ PVector gravityVector = calculateGravityForce(planetPos, pos, mass,G);
   return gravityVector;
 }
  
@@ -203,7 +216,9 @@ void draw()
   theStars.render();
   theStars.renderSun(25);
   stats.render(ship1,ship2);
-  thePlanet.update();
+  if (!gamePaused) {
+    thePlanet.update();
+  }
   thePlanet.render();
   
   if (ship1.hitOtherShip(ship2)) {
@@ -233,7 +248,12 @@ void draw()
     ship1.killMissile();
   }
   
-  if (ship1.missileOnALiveBullet(ship2)) {
+  if (ship1.missileHitOtherShipsMissile (ship2)) {
+    ship1.killMissile();
+    ship2.killMissile();
+  }
+
+   if (ship1.missileOnALiveBullet(ship2)) {
     ship2.killMissile();
   }
   
