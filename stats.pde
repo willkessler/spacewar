@@ -2,14 +2,14 @@ class Stats {
  boolean showInstructions = true;
  int[] scores;
  PFont f;
+ int fire;
  
   Stats() {
    f = createFont("Courier",16,true); 
   }
  
- void hideInstructions (){
-   showInstructions = false;
-   
+ void hideInstructions () {
+   showInstructions = false;  
  }
  
   void  renderEngineTemp (Ship ship) {
@@ -53,13 +53,15 @@ class Stats {
     fill(255,0,0);
     text("Player2: " + ship2.getScore(),width - 120,20);
     
-    if (showInstructions) {
     
+    if (gamePaused == true) {
+       
       fill (200);
       text ( "Welcome to Spacewar!   ", 20, windowSize - 90);
       text ( "ship1: WASDE keys. ship2: IJKLU keys. " , 20, windowSize - 70);
       text (" space key = hyperspace, 0/1 = pause.", 20, windowSize - 50);
-    }
+    
+  }
     
     
    renderShipStatus(ship1);
