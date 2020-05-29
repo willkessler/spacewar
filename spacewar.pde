@@ -232,8 +232,8 @@ void draw()
     ship1.addPoints(killPoints);
     ship1.killMissile();
   }
-
-   if (ship1.missileOnALiveBullet(ship2)) {
+  
+  if (ship1.missileOnALiveBullet(ship2)) {
     ship2.killMissile();
   }
   
