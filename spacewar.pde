@@ -150,7 +150,7 @@ PVector calculateSunsGravityForce(PVector pos, float mass) {
 
 PVector calculatePlanetsGravityForce(PVector pos, float mass) {
   PVector planetPos = thePlanet.getPlanetPos();
- float G = 16;
+ float G = 20;
  PVector gravityVector = calculateGravityForce(planetPos, pos, mass,G);
   return gravityVector;
 }
