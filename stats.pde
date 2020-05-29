@@ -2,7 +2,6 @@ class Stats {
  boolean showInstructions = true;
  int[] scores;
  PFont f;
- int fire;
  
   Stats() {
    f = createFont("Courier",16,true); 

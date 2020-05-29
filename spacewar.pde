@@ -15,6 +15,7 @@
 // X orbiting planet
 // X keys legend at bottom of screen
 // heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
+// AI choice between 1 player and 2 player
 
 
 import processing.sound.*;
