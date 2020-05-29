@@ -201,7 +201,7 @@ println("this should have worked out ");
 void draw()
 {
   background(0,0,0);
-    theStars.render();
+  theStars.render();
   theStars.renderSun(25);
   stats.render(ship1,ship2);
   if (!gamePaused) {
