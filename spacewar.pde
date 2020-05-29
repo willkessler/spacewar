@@ -14,6 +14,7 @@
 // X hyperspace time limit
 // X orbiting planet
 // X keys legend at bottom of screen
+// X planet has gravity!
 // heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
 // AI choice between 1 player and 2 player
 
@@ -136,15 +137,26 @@ boolean insideSun (PVector pos) {
   return ((abs(halfWindow - pos.x) < 10) && (abs(halfWindow - pos.y) < 10));  
 }
 
-PVector calculateGravityForce(PVector pos, float mass) {
-  PVector sunVector = new PVector(windowSize / 2, windowSize/2);
-  float distToSun = pos.dist(sunVector);
-  PVector shipToSunVector = PVector.sub(sunVector, pos);
-  shipToSunVector.normalize();
-  float G = 32;
-  float gravityFactor = (1.0 / (pow(distToSun, 1.57))) * G * mass;
-  PVector gravityVector = PVector.mult(shipToSunVector, gravityFactor);
+PVector calculateGravityForce(PVector gravityWellPos, PVector pos, float mass, float G) {
+  float distToWell = pos.dist(gravityWellPos);
+  PVector shipToWellVector = PVector.sub(gravityWellPos, pos);
+  shipToWellVector.normalize();
+  float gravityFactor = (1.0 / (pow(distToWell, 1.57))) * G * mass;
+  PVector gravityVector = PVector.mult(shipToWellVector, gravityFactor);
+  return gravityVector;
+}
 
+PVector calculateSunsGravityForce(PVector pos, float mass) {
+  PVector sunPos = new PVector (windowSize / 2, windowSize/2);
+  float G = 32;
+  PVector gravityVector = calculateGravityForce(sunPos, pos, mass, G);
+  return gravityVector;
+}
+
+PVector calculatePlanetsGravityForce(PVector pos, float mass) {
+  PVector planetPos = thePlanet.getPlanetPos();
+ float G = 20;
+ PVector gravityVector = calculateGravityForce(planetPos, pos, mass,G);
   return gravityVector;
 }
  

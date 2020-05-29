@@ -1,5 +1,5 @@
-// orbiting planet gets in the way of ships, missiles, etc
-//no gravity
+// X orbiting planet gets in the way of ships, missiles, etc
+// X planet has gravity
 class Planet {
 
   PVector pos, vel,accel;
@@ -19,6 +19,10 @@ class Planet {
     accel = new PVector(0,0);
   }
   
+  PVector getPlanetPos() {
+    return pos;
+  }
+  
   boolean collides (PVector checkPos) {
     float planetDistance = pos.dist(checkPos);
     return (planetDistance < collisionTolerance);
@@ -26,7 +30,7 @@ class Planet {
   
   void update() {
     // apply sun's gravity
-    accel.add(calculateGravityForce(pos,mass));
+    accel.add(calculateSunsGravityForce(pos,mass));
     vel.add(accel);
     vel.limit(maxSpeed);
     pos.add(vel);

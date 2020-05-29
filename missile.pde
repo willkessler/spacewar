@@ -27,6 +27,7 @@ class Missile {
   int ttl;
   int lifeSpan = 500;
   float rot; // where the missile is facing
+  MissileExplosion missileExplosion;
   Ship parent;
   Ship enemyShip;
   float enemyRange = windowSize; // can track you over entire screen right now
@@ -44,10 +45,19 @@ class Missile {
     vel = new PVector(0,0);
     accel = new PVector(0,0);
     parent = ship;
+    missileExplosion = new MissileExplosion(this);
   }
   
   PVector getMissilePos() {
     return pos;
+  }
+  
+  PVector getMissileVel() {
+    return vel;
+  }
+  
+  color getMissileColor() {
+    return parent.shipColor;
   }
   
   // calculate if the enemy ship is near enough to "see" and in front of the missile. Return a zero vector is not.
@@ -106,6 +116,7 @@ class Missile {
   void die() {
     live = false;
     playRandomExplosionSound();
+    missileExplosion.start();
  }
   
   boolean isLive () {
@@ -124,8 +135,9 @@ class Missile {
       die();
     }
     
-    accel.add(calculateGravityForce(pos,mass));
-    
+    accel.add(calculateSunsGravityForce(pos,mass));
+    accel.add(calculatePlanetsGravityForce(pos,mass));
+   
     PVector enemyShipDirection = calculateEnemyShipDirection();
     PVector currentPos = new PVector();
     // save the current position so after we move we can align a ship along a vector
@@ -151,13 +163,13 @@ class Missile {
 
     ttl -= 1;
     if (ttl == 0) {
-      ttl = lifeSpan;
-      live = false; // missile has "died"
+      die();
     }
     accel.mult(0);
   }
   
   void render() {
+    missileExplosion.render(); // if an explosion is live, render it
     if (live) {
       //println("Missile away at : ", pos);
       fill(0);

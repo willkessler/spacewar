@@ -13,7 +13,7 @@ class Ship {
   float accelFactor;
   int numBullets = 5;
   float mass = 1.0;
-  float tooHotEngineTemp = 450;
+  float tooHotEngineTemp = 550;
   boolean thrustOn;
   PVector startPos;
   float engineHeatConstant = 3.5;
@@ -240,7 +240,8 @@ class Ship {
     } else { 
       engineTemp = max (0,engineTemp - 1);
     }
-    accel.add(calculateGravityForce(pos,mass));
+    accel.add(calculateSunsGravityForce(pos,mass));
+    accel.add(calculatePlanetsGravityForce(pos,mass));
     vel.add(accel);
     vel.mult(friction);
     //if (shipId == 0) {
