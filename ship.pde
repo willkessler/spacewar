@@ -198,6 +198,14 @@ class Ship {
     boolean impact = (((abs(pos.x - missilePos.x) < 10) && (abs(pos.y - missilePos.y) < 10)));
     return impact && otherShip.missile.isLive();
   }
+  
+  
+   boolean missileHitOtherShipsMissile(Ship otherShip) {
+     PVector missile1Pos = missile.getMissilePos();
+     PVector missile2Pos = otherShip.missile.getMissilePos();
+     boolean impact = (((abs(missile1Pos.x - missile2Pos.x) < 10) && (abs(missile1Pos.y - missile2Pos.y) < 10)));
+     return impact && missile.isLive() && otherShip.missile.isLive();
+   }
 
 
   

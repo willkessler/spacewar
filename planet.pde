@@ -48,14 +48,16 @@ class Planet {
     //sphere(radius);
     popMatrix();
     
-    innerSpin = innerSpin + innerSpinInc;
-    if (innerSpin > 10) {
-      innerSpinInc = -innerSpinInc;
-      innerSpin = 10;
-    } else if (innerSpin < 1) {
-      innerSpinInc = -innerSpinInc;
-      innerSpin = 1;
-    }
+    if (!gamePaused){
     
+      innerSpin = innerSpin + innerSpinInc;
+      if (innerSpin > 10) {
+        innerSpinInc = -innerSpinInc;
+        innerSpin = 10;
+      } else if (innerSpin < 1) {
+        innerSpinInc = -innerSpinInc;
+        innerSpin = 1;
+      }    
+    }
   }
 }
