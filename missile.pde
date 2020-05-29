@@ -23,7 +23,7 @@ class Missile {
   float fuel;
   boolean live;
   int ttl;
-  int lifeSpan = 600;
+  int lifeSpan = 500;
   float rot; // where the missile is facing
   Ship parent;
   Ship enemyShip;
@@ -31,7 +31,7 @@ class Missile {
   float enemyAngleTolerance = 360;
   float mass = .4;
   float missileLaunchForce = 1;
-  float missileSmartFactor = 0.046;
+  float missileSmartFactor = 0.045;
   float maxSpeed = 3;
   float halfMissileWidth = halfShipWidth * 0.3;
   float halfMissileHeight = halfShipHeight * .8;

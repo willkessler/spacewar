@@ -13,7 +13,7 @@
 // X improved stats: display "Overheated", "Destroyed", "Hit the sun!"
 // X hyperspace time limit
 // X orbiting planet
-// keys legend at bottom of screen
+// X keys legend at bottom of screen
 // heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
 
 
@@ -41,7 +41,8 @@ int killPoints = 10;
 // =-=-==-=-==-=-==-=-==-=-==-=-= UTILITY FUNCTIONS =-=-==-=-==-=-==-=-==-=-==-=-=
 
 void keyPressed() {  
- switch (key) {
+ stats.hideInstructions();
+  switch (key) {
    case '0':
    case '1':
      gamePaused = !gamePaused;
@@ -203,7 +204,9 @@ void draw()
   theStars.render();
   theStars.renderSun(25);
   stats.render(ship1,ship2);
-  thePlanet.update();
+  if (!gamePaused) {
+    thePlanet.update();
+  }
   thePlanet.render();
   
   if (ship1.hitOtherShip(ship2)) {
@@ -231,6 +234,11 @@ void draw()
     ship2.blowUp();
     ship1.addPoints(killPoints);
     ship1.killMissile();
+  }
+  
+  if (ship1.missileHitOtherShipsMissile (ship2)) {
+    ship1.killMissile();
+    ship2.killMissile();
   }
 
    if (ship1.missileOnALiveBullet(ship2)) {
