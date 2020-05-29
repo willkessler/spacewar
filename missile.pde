@@ -11,10 +11,12 @@
 // X orientation must track its velocity vector
 // X shoot missile with bullets! very important
 // X thrust display on missiles
+// X collisions with the other missile
+// X collisions with the other missile
+
 // missile explosion
 // when missiles "die" because they time out, play explosion but fizzle
 // run out of fuel becuase missile is stupid (? do they stop tracking and just fly for a while?)
-// collisions with the other missile
 // missile explodes near ship, it blows up
 
 class Missile {

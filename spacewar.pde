@@ -15,6 +15,7 @@
 // X orbiting planet
 // X keys legend at bottom of screen
 // heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
+// AI choice between 1 player and 2 player
 
 
 import processing.sound.*;
@@ -45,7 +46,11 @@ void keyPressed() {
   switch (key) {
    case '0':
    case '1':
-     gamePaused = !gamePaused;
+     if (gamePaused == true) {
+       gamePaused = false;
+     } else {
+       gamePaused = true;
+     }
      break;
    case ' ':
      ship1.goIntoHyperspace();
@@ -164,7 +169,7 @@ void setup()
   theStars = new Stars();
   thePlanet = new Planet();
   
-println("this should have worked out ");
+//println("this should have worked out ");
 
   // Load a soundfile from the /data folder of the sketch and play it back
   explosions = new SoundFile[10];
@@ -194,7 +199,7 @@ println("this should have worked out ");
   ship2.setEnemyShip(ship1);
   
   noise.amp(0.5);
-  gamePaused = false;
+  gamePaused = true;
 
 }
 

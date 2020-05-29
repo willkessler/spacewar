@@ -74,13 +74,17 @@ class Ship {
   int getShipColor() {
     return shipColor;
   }
-  
-  void fireBullet(PVector pos, PVector vel) {
-    for (Bullet bullet : bullets) {
-      if (!bullet.isLive()) {
-        bullet.fire(pos,vel,rot);
-        break;
-      }
+    
+  void fireBullet() {
+    if (missile.isLive() || gamePaused) {
+      return; // can't fire bullets while your missile is away! or the game is paused
+    }
+
+      for (Bullet bullet : bullets) {
+        if (!bullet.isLive()) {
+          bullet.fire(pos,vel,rot);
+          break;
+        }
     }
   }
   
@@ -179,8 +183,12 @@ class Ship {
   }
   
   void applyThrust() {
+    if (gamePaused) {
+      return;
+    }
     if (shipState == 0) { // can't accelerate if not alive
       thrustOn = true;
+      
     }
   }
 
@@ -206,8 +214,6 @@ class Ship {
      boolean impact = (((abs(missile1Pos.x - missile2Pos.x) < 10) && (abs(missile1Pos.y - missile2Pos.y) < 10)));
      return impact && missile.isLive() && otherShip.missile.isLive();
    }
-
-
   
   void blowUp() {
     setShipState(2);
@@ -221,18 +227,6 @@ class Ship {
     cancelThrust();
   }
   
-  void fireBullet() {
-    if (missile.isLive()) {
-      return; // can't fire bullets while your missile is away!
-    }
-    
-    for (Bullet bullet: bullets) {
-      if (!bullet.isLive()) {
-        bullet.fire(pos,vel,rot);
-        break;
-      } 
-    }
-  }
   
 // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE FOR SHIPS =-=-==-=-==-=-==-=-==-=-==-=-= 
   
