@@ -45,14 +45,25 @@ class AI {
     
   }
   
+  
+  void fireAtOtherShip() {
+    float timeToFire = random(0,1);
+    PVector p1, p2;
+    p1 = parentShip.getShipPos();
+    p2 = otherShip.getShipPos();
+    float distToOtherShip = p1.dist(p2);
+    if (distToOtherShip < windowSize / 4) {
+      if (timeToFire < 0.25) {
+        parentShip.fireBullet();
+      }
+    }
+  }
+  
   // control the ship
   void control() {
     
     pointAtOtherShip();
-    int timeToFire = int(random(0,9));
-    if (timeToFire == 3) {
-      //parentShip.fireBullet();
-    }
+    fireAtOtherShip();
   }
   
 }
