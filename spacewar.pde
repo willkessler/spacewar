@@ -38,6 +38,7 @@ WhiteNoise noise = new WhiteNoise(this);
 Ship ship1, ship2;
 Stars theStars;
 Planet thePlanet;
+AI theAI;
 int killPoints = 10;
 
 // =-=-==-=-==-=-==-=-==-=-==-=-= UTILITY FUNCTIONS =-=-==-=-==-=-==-=-==-=-==-=-=
@@ -148,14 +149,16 @@ PVector calculateGravityForce(PVector gravityWellPos, PVector pos, float mass, f
 
 PVector calculateSunsGravityForce(PVector pos, float mass) {
   PVector sunPos = new PVector (windowSize / 2, windowSize/2);
-  float G = 32;
+  //float G = 32;
+  float G = 1;
   PVector gravityVector = calculateGravityForce(sunPos, pos, mass, G);
   return gravityVector;
 }
 
 PVector calculatePlanetsGravityForce(PVector pos, float mass) {
   PVector planetPos = thePlanet.getPlanetPos();
- float G = 20;
+ //float G = 20;
+ float G = 0.5;
  PVector gravityVector = calculateGravityForce(planetPos, pos, mass,G);
   return gravityVector;
 }
@@ -180,6 +183,7 @@ void setup()
   stats = new Stats();
   theStars = new Stars();
   thePlanet = new Planet();
+  theAI = new AI();
   
   // Load a soundfile from the /data folder of the sketch and play it back
   explosions = new SoundFile[10];
@@ -207,6 +211,8 @@ void setup()
   ship2 = new Ship(1, windowSize - partWindow,windowSize - partWindow, color(255,0,0));
   ship1.setEnemyShip(ship2);
   ship2.setEnemyShip(ship1);
+  
+  theAI.assignShips(ship2, ship1);
   
   noise.amp(0.5);
   gamePaused = true;
@@ -285,5 +291,7 @@ void draw()
     ship2.update();
   }
   ship2.render(); 
+  
+  theAI.control();
   
 }

@@ -59,6 +59,14 @@ class Ship {
     return shipState;
   }
   
+  PVector getShipPos() {
+    return pos;
+  }
+  
+  float getShipRot() {
+    return rot - 90; // because of the way the ships are rendered, the "actual" ship heading is off by 90 degrees so we compensate here
+  }
+  
   void setShipState(int newShipState) {
     shipState = newShipState;
   }

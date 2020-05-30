@@ -6,10 +6,53 @@
 // makes sure to not overheat but sometimes messes up like a human
 
 class AI {
-  Ship AIShip;
+  Ship parentShip, otherShip;
   // constructor
-  AI (Ship parentShip) {
-    AIShip = parentShip;
+  AI () {
+    println("Created an AI");
+  }
+
+  void assignShips(Ship pShip, Ship oShip) {
+    parentShip = pShip;
+    otherShip = oShip;
+  }
+  
+  void pointAtOtherShip() {
+    PVector p1, p2;
+    p1 = parentShip.getShipPos();
+    p2 = otherShip.getShipPos();
+    PVector directionVector = new PVector(0,0);
+    directionVector.set(p2);
+    directionVector.sub(p1);
+    directionVector.normalize();
+    float rot = parentShip.getShipRot();
+    PVector rotVec = new PVector();
+    float radRot = radians(rot);
+    rotVec.set(cos(radRot), sin(radRot));
+    float rotDiff = angleBetweenVectors(directionVector,rotVec) ;
+    PVector crossProduct = rotVec.cross(directionVector);
+    float turnSign = crossProduct.z < 0 ? -1 : 1;
+    println("directionVector:", directionVector, "rotVector:", rotVec,  "angle", rotDiff);
+    if (abs(rotDiff) > 10) {
+      if (rotDiff < 0) {
+        parentShip.startTurning(-turnSign);
+      } else {
+        parentShip.startTurning(turnSign);
+      }
+    } else {
+      parentShip.stopTurning();
+    }
+    
+  }
+  
+  // control the ship
+  void control() {
+    
+    pointAtOtherShip();
+    int timeToFire = int(random(0,9));
+    if (timeToFire == 3) {
+      //parentShip.fireBullet();
+    }
   }
   
 }
