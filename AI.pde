@@ -7,9 +7,16 @@
 
 class AI {
   Ship parentShip, otherShip;
+  boolean activateThrust;
+  boolean activateBulletFire;
+  boolean activateMissile;
+  
   // constructor
   AI () {
     println("Created an AI");
+    activateThrust = false;
+    activateBulletFire = false;
+    activateMissile = false;
   }
 
   void assignShips(Ship pShip, Ship oShip) {
@@ -52,18 +59,41 @@ class AI {
     p1 = parentShip.getShipPos();
     p2 = otherShip.getShipPos();
     float distToOtherShip = p1.dist(p2);
-    if (distToOtherShip < windowSize / 4) {
-      if (timeToFire < 0.25) {
-        parentShip.fireBullet();
-      }
+    activateBulletFire |= (distToOtherShip < windowSize / 4) && (timeToFire < 0.25);
+  }
+  
+  // If falling towards the sun (vel towards sun) and within range of the sun, turn perpendicular to the sun and apply thrust
+  void avoidSun() {
+    float timeToThrust = random(0,1);
+    activateThrust = timeToThrust < 0.15;
+  }
+  
+  void avoidPlanet() {
+  }
+  
+  // depending on all decisions made, do a final control action on the ship
+  void takeActions() {
+    if (activateThrust) {
+      parentShip.applyThrust();
+      activateThrust = false;
+    } else {
+      parentShip.cancelThrust();
+    }   
+      
+    if (activateBulletFire) {
+      parentShip.fireBullet();
+      activateBulletFire = false;
     }
   }
   
   // control the ship
   void control() {
-    
+    avoidSun();
+    avoidPlanet();
     pointAtOtherShip();
     fireAtOtherShip();
+    
+    takeActions();
   }
   
 }
