@@ -3,7 +3,7 @@
 // X it only thrusts when it needs to get near the player 
 // it only thrusts away from the planet or sun
 // in the begining of the game, you can choose between 2-players and vs the AI
-// runs a randomizer every time its too far away for a bullet, it tries to fire a missile
+// X runs a randomizer every time its too far away for a bullet, it tries to fire a missile
 
 class AI {
   Ship parentShip, otherShip;
