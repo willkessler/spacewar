@@ -15,7 +15,6 @@ class Ship {
   float mass = 1.0;
   float tooHotEngineTemp = 550;
   boolean thrustOn;
-  PVector startPos;
   float engineHeatConstant = 3.5;
   Bullet[] bullets;
   Explosion shipExplosion;
@@ -28,7 +27,6 @@ class Ship {
     accel = new PVector(0,0);
     vel = new PVector(random(-0.5, 0.5), random(-0.5, 0.5));
     pos = new PVector(x,y);
-    startPos = new PVector(x,y);
     maxSpeed = 5;
     shipWidth = 15;
     shipColor = sColor;    
@@ -230,8 +228,26 @@ class Ship {
   void blowUp() {
     setShipState(2);
     shipExplosion.start(this);
-    pos.x = startPos.x;
-    pos.y = startPos.y;
+    // make ship respawn somewhere near the margins so you don't get insta-die by spawning near planet or sun.
+    float buffer = 50;
+    float newX, newY;
+    if (shipId == 0) {
+      newX = random(0, windowSize);
+      if (newX < buffer) {
+        newY = random(0, windowSize);
+      } else {
+        newY = random(0,buffer);
+      }
+    } else {
+      newX = random(0,windowSize);
+      if (newX < windowSize - buffer) {
+        newY = random(windowSize - buffer, windowSize);
+      } else {
+        newY = random(0,windowSize);
+      }
+    }
+   
+    pos.set( newX, newY);
     vel.x = 0;
     vel.y = 0;
     engineTemp = 0;

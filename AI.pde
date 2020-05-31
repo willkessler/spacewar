@@ -62,14 +62,19 @@ class AI {
     
   }
   
-  boolean inFiringRange(float likelihood, float minAllowedDistance) {
+  boolean inFiringRange(float likelihood, float minAllowedDistance, String ConditionType) {
     float timeToFire = random(0,1);
     PVector p1, p2;
     p1 = parentShip.getShipPos();
     p2 = otherShip.getShipPos();
     float distToOtherShip = p1.dist(p2);
-    return (distToOtherShip < windowSize / 4) &&
-           (distToOtherShip >= minAllowedDistance) && 
+    boolean distCheck;
+    if (ConditionType == "farEnoughAway") {
+      distCheck = (distToOtherShip >= minAllowedDistance);
+    } else {
+      distCheck = (distToOtherShip < windowSize / 4);
+    }
+    return distCheck && 
            (timeToFire < likelihood) && 
            otherShipInGunsight;
   }
@@ -157,8 +162,8 @@ class AI {
     //avoidGravityWell(thePlanet.getPlanetPos());
     avoidMissile();
     avoidOverheating();
-    activateBulletFire = inFiringRange(0.25,25);
-    activateMissile = inFiringRange(0.01, 150.0);
+    activateBulletFire = inFiringRange(0.25,25, "closeEnough");
+    activateMissile = inFiringRange(0.01, windowSize / 2, "farEnoughAway");
     
     takeAction();
   }
