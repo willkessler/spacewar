@@ -15,8 +15,9 @@
 // X orbiting planet
 // X keys legend at bottom of screen
 // X planet has gravity!
-// heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
-// AI choice between 1 player and 2 player
+// X heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
+// X AI choice between 1 player and 2 player
+// limited number of ships (10), and then game over. whoever has the most points wins
 
 
 import processing.sound.*;
@@ -27,6 +28,7 @@ float shipHeight = shipWidth * 1.5;
 float halfShipHeight = shipHeight / 2;
 float halfShipWidth = shipWidth / 2;
 boolean gamePaused;
+boolean useAI = true;
 
 SoundFile[] explosions;
 SoundFile gunshot;
@@ -48,12 +50,17 @@ void keyPressed() {
   switch (key) {
    case '0':
    case '1':
+   case '2':
      if (gamePaused == true) {
        gamePaused = false;
      } else {
        gamePaused = true;
      }
-     break;
+   
+     if (key == '2') {
+       useAI = false;
+     }
+     break; 
    case ' ':
      ship1.goIntoHyperspace();
      ship2.goIntoHyperspace();
@@ -209,9 +216,9 @@ void setup()
   ship2 = new Ship(1, windowSize - partWindow,windowSize - partWindow, color(255,0,0));
   ship1.setEnemyShip(ship2);
   ship2.setEnemyShip(ship1);
-  
-  theAI.assignShips(ship2, ship1);
-  
+  if (useAI) {
+    theAI.assignShips(ship2, ship1);
+  }
   noise.amp(0.5);
   gamePaused = true;
 
@@ -290,6 +297,7 @@ void draw()
   }
   ship2.render(); 
   
-  theAI.control();
-  
+  if(!gamePaused && useAI) {
+    theAI.control();
+  }
 }
