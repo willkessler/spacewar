@@ -10,6 +10,9 @@ class AI {
   boolean activateThrust;
   boolean activateBulletFire;
   boolean activateMissile;
+  int minThrustTime = 150; // we will never apply thrust for less than this many draw cycles
+  int thrustTimeCountdown = 0;
+  boolean otherShipInGunsight = false;
   
   // constructor
   AI () {
@@ -24,7 +27,7 @@ class AI {
     otherShip = oShip;
   }
   
-  void pointAtOtherShip() {
+  void attackOtherShip() {
     PVector p1, p2;
     p1 = parentShip.getShipPos();
     p2 = otherShip.getShipPos();
@@ -39,61 +42,92 @@ class AI {
     float rotDiff = angleBetweenVectors(directionVector,rotVec) ;
     PVector crossProduct = rotVec.cross(directionVector);
     float turnSign = crossProduct.z < 0 ? -1 : 1;
-    println("directionVector:", directionVector, "rotVector:", rotVec,  "angle", rotDiff);
+    //println("directionVector:", directionVector, "rotVector:", rotVec,  "angle", rotDiff);
     if (abs(rotDiff) > 10) {
       if (rotDiff < 0) {
         parentShip.startTurning(-turnSign);
       } else {
         parentShip.startTurning(turnSign);
       }
+      otherShipInGunsight = false;
     } else {
       parentShip.stopTurning();
+      tryToThrust(); // try to go towards the other ship
+      otherShipInGunsight = true; // 
     }
     
   }
-  
-  
+    
   void fireAtOtherShip() {
     float timeToFire = random(0,1);
     PVector p1, p2;
     p1 = parentShip.getShipPos();
     p2 = otherShip.getShipPos();
     float distToOtherShip = p1.dist(p2);
-    activateBulletFire |= (distToOtherShip < windowSize / 4) && (timeToFire < 0.25);
+    activateBulletFire |= (distToOtherShip < windowSize / 4) && (timeToFire < 0.25) && otherShipInGunsight;
+  }
+  
+  void fireMissileAtOtherShip() {
+  }
+  
+  void tryToThrust() {
+    if (thrustTimeCountdown == 0) {
+      activateThrust = true; // only activate thrust when not already turned on
+      thrustTimeCountdown = minThrustTime;
+    }
   }
   
   // If falling towards the sun (vel towards sun) and within range of the sun, turn perpendicular to the sun and apply thrust
   void avoidSun() {
     float timeToThrust = random(0,1);
-    activateThrust = timeToThrust < 0.15;
+    if (timeToThrust < 0.01) {
+      //tryToThrust();
+    } 
   }
   
   void avoidPlanet() {
   }
   
-  // depending on all decisions made, do a final control action on the ship
-  void takeActions() {
-    if (activateThrust) {
-      parentShip.applyThrust();
-      activateThrust = false;
-    } else {
+  void avoidMissile() {
+  }
+  
+  void avoidOverheating() {
+    if (parentShip.engineGettingTooHot()) {
+      activateThrust = false; // deactivate the thrust if we're close to overheating
       parentShip.cancelThrust();
-    }   
-      
-    if (activateBulletFire) {
-      parentShip.fireBullet();
-      activateBulletFire = false;
     }
   }
+  
+  // Depending on all decisions made up to this point, do the final control actions on the ship
+  void takeAction() {
+    if (thrustTimeCountdown > 0) {
+      if (activateThrust) {
+        parentShip.applyThrust();
+      }
+      --thrustTimeCountdown;
+    } else {
+      parentShip.cancelThrust();
+      activateThrust = false;
+    }
+    
+    if (activateBulletFire) {
+      parentShip.fireBullet();
+    }
+
+    activateBulletFire = false;
+ }
   
   // control the ship
   void control() {
     avoidSun();
     avoidPlanet();
-    pointAtOtherShip();
+    avoidMissile();
+    attackOtherShip();    
+    avoidOverheating();
     fireAtOtherShip();
+    fireMissileAtOtherShip();
     
-    takeActions();
+    takeAction();
   }
   
 }
