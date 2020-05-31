@@ -1,9 +1,9 @@
 // X shoots when aiming at player
-// runs a randomizer every time its too far away for a bullet, it tries to fire a missile
-// it trys to avoid the sun, and the planet 
+// X makes sure to not overheat but sometimes messes up like a human
+// X it only thrusts when it needs to get near the player 
+// it only thrusts away from the planet or sun
 // in the begining of the game, you can choose between 2-players and vs the AI
-// it only thrusts when it needs to get near the player or away from the planet or sun
-// makes sure to not overheat but sometimes messes up like a human
+// runs a randomizer every time its too far away for a bullet, it tries to fire a missile
 
 class AI {
   Ship parentShip, otherShip;
@@ -15,6 +15,8 @@ class AI {
   int minMissileTime = 500;
   int missileTimeCountdown = 0; // we won't fire missiles too soon after last missile
   boolean otherShipInGunsight = false;
+  float turnAmount = 0;
+  PVector sunPos;
   
   // constructor
   AI () {
@@ -22,6 +24,7 @@ class AI {
     activateThrust = false;
     activateBulletFire = false;
     activateMissile = false;
+    sunPos = new PVector(windowSize/2, windowSize/2);
   }
 
   void assignShips(Ship pShip, Ship oShip) {
@@ -47,35 +50,28 @@ class AI {
     //println("directionVector:", directionVector, "rotVector:", rotVec,  "angle", rotDiff);
     if (abs(rotDiff) > 10) {
       if (rotDiff < 0) {
-        parentShip.startTurning(-turnSign);
+        turnAmount = -turnSign;
       } else {
-        parentShip.startTurning(turnSign);
+        turnAmount = turnSign;
       }
       otherShipInGunsight = false;
     } else {
-      parentShip.stopTurning();
       tryToThrust(); // try to go towards the other ship
       otherShipInGunsight = true; // 
     }
     
   }
   
-  boolean inFiringRange(float likelihood) {
+  boolean inFiringRange(float likelihood, float minAllowedDistance) {
     float timeToFire = random(0,1);
     PVector p1, p2;
     p1 = parentShip.getShipPos();
     p2 = otherShip.getShipPos();
     float distToOtherShip = p1.dist(p2);
-    return (distToOtherShip < windowSize / 4) && (timeToFire < likelihood) && otherShipInGunsight;
-  }
-
-  void fireMissileAtOtherShip() {
-    float timeToFire = random(0,1);
-    PVector p1, p2;
-    p1 = parentShip.getShipPos();
-    p2 = otherShip.getShipPos();
-    float distToOtherShip = p1.dist(p2);
-    activateMissile |= (distToOtherShip < windowSize / 4) && (timeToFire < 0.01) && otherShipInGunsight;
+    return (distToOtherShip < windowSize / 4) &&
+           (distToOtherShip >= minAllowedDistance) && 
+           (timeToFire < likelihood) && 
+           otherShipInGunsight;
   }
   
   void tryToThrust() {
@@ -86,11 +82,24 @@ class AI {
   }
   
   // If falling towards the sun (vel towards sun) and within range of the sun, turn perpendicular to the sun and apply thrust
-  void avoidSun() {
-    float timeToThrust = random(0,1);
-    if (timeToThrust < 0.01) {
-      //tryToThrust();
-    } 
+  void avoidGravityWell(PVector gPos) {
+    PVector velVec = parentShip.getShipVel();
+    PVector vecToGravityWell = new PVector(gPos.x, gPos.y);
+    PVector pos = parentShip.getShipPos();
+    vecToGravityWell.sub(pos);
+    vecToGravityWell.normalize();
+    float rotDiff = angleBetweenVectors(vecToGravityWell,velVec) ;
+    PVector crossProduct = velVec.cross(vecToGravityWell);
+    float turnSign = crossProduct.z < 0 ? -1 : 1;
+    if (abs(rotDiff) < 10) {
+      if (rotDiff < 0) {
+        turnAmount = -turnSign;
+      } else {
+        turnAmount = turnSign;
+      }
+    } else {
+      tryToThrust(); // try to go away from gravityWell
+    }
   }
   
   void avoidPlanet() {
@@ -109,6 +118,14 @@ class AI {
   
   // Depending on all decisions made up to this point, do the final control actions on the ship
   void takeAction() {
+    
+    if (abs(turnAmount) > 0) { 
+      parentShip.startTurning(turnAmount);
+      turnAmount = 0;
+    } else {
+      parentShip.stopTurning();
+    }
+    
     if (thrustTimeCountdown > 0) {
       if (activateThrust) {
         parentShip.applyThrust();
@@ -135,13 +152,13 @@ class AI {
   
   // control the ship
   void control() {
-    avoidSun();
-    avoidPlanet();
-    avoidMissile();
     attackOtherShip();    
+    //avoidGravityWell(sunPos);
+    //avoidGravityWell(thePlanet.getPlanetPos());
+    avoidMissile();
     avoidOverheating();
-    activateBulletFire = inFiringRange(0.25);
-    activateMissile = inFiringRange(0.05);
+    activateBulletFire = inFiringRange(0.25,25);
+    activateMissile = inFiringRange(0.01, 150.0);
     
     takeAction();
   }
