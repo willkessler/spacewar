@@ -44,22 +44,21 @@ class Stats {
    
   
   void render(Ship ship1, Ship ship2) {
-   textFont(f);
+    textFont(f);
     // player 1 score
-   fill(0,255,0);
-   text("Player 1: " + ship1.getScore(),10,20);
-   // player 2 score
+    fill(0,255,0);
+    text("Player 1: " + ship1.getScore(),10,20);
+    // player 2 score
     fill(255,0,0);
     text("Player2: " + ship2.getScore(),width - 120,20);
     
     
     if (gamePaused == true) {
-       
       fill (200);
-      text ( "Welcome to Spacewar!   ", 20, windowSize - 90);
-      text ( "ship1: WASDE keys. ship2: IJKLU keys. " , 20, windowSize - 70);
-      text (" space key = hyperspace, 0/1 = pause.", 20, windowSize - 50);
-    
+      text ("Welcome to Spacewar!   ", 20, windowSize - 110);
+      text ("ship1: WASDE keys. ship2: IJKLU keys. " , 20, windowSize - 90);
+      text ("space key = hyperspace, 0 or 1 key = pause.", 20, windowSize - 70);
+      text ("Start-> Press 1 for 1 player, 2 for 2 player" , 20, windowSize - 50); 
   }
     
     

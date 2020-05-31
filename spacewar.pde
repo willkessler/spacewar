@@ -15,8 +15,9 @@
 // X orbiting planet
 // X keys legend at bottom of screen
 // X planet has gravity!
-// heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
-// AI choice between 1 player and 2 player
+// X heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
+// X AI choice between 1 player and 2 player
+// limited number of ships (10), and then game over. whoever has the most points wins
 
 
 import processing.sound.*;
@@ -27,6 +28,7 @@ float shipHeight = shipWidth * 1.5;
 float halfShipHeight = shipHeight / 2;
 float halfShipWidth = shipWidth / 2;
 boolean gamePaused;
+boolean useAI = true;
 
 SoundFile[] explosions;
 SoundFile gunshot;
@@ -38,6 +40,7 @@ WhiteNoise noise = new WhiteNoise(this);
 Ship ship1, ship2;
 Stars theStars;
 Planet thePlanet;
+AI theAI;
 int killPoints = 10;
 
 // =-=-==-=-==-=-==-=-==-=-==-=-= UTILITY FUNCTIONS =-=-==-=-==-=-==-=-==-=-==-=-=
@@ -47,12 +50,17 @@ void keyPressed() {
   switch (key) {
    case '0':
    case '1':
+   case '2':
      if (gamePaused == true) {
        gamePaused = false;
      } else {
        gamePaused = true;
      }
-     break;
+   
+     if (key == '2') {
+       useAI = false;
+     }
+     break; 
    case ' ':
      ship1.goIntoHyperspace();
      ship2.goIntoHyperspace();
@@ -148,14 +156,14 @@ PVector calculateGravityForce(PVector gravityWellPos, PVector pos, float mass, f
 
 PVector calculateSunsGravityForce(PVector pos, float mass) {
   PVector sunPos = new PVector (windowSize / 2, windowSize/2);
-  float G = 32;
+  float G = 30;
   PVector gravityVector = calculateGravityForce(sunPos, pos, mass, G);
   return gravityVector;
 }
 
 PVector calculatePlanetsGravityForce(PVector pos, float mass) {
   PVector planetPos = thePlanet.getPlanetPos();
- float G = 20;
+ float G = 18;
  PVector gravityVector = calculateGravityForce(planetPos, pos, mass,G);
   return gravityVector;
 }
@@ -180,6 +188,7 @@ void setup()
   stats = new Stats();
   theStars = new Stars();
   thePlanet = new Planet();
+  theAI = new AI();
   
   // Load a soundfile from the /data folder of the sketch and play it back
   explosions = new SoundFile[10];
@@ -207,7 +216,9 @@ void setup()
   ship2 = new Ship(1, windowSize - partWindow,windowSize - partWindow, color(255,0,0));
   ship1.setEnemyShip(ship2);
   ship2.setEnemyShip(ship1);
-  
+  if (useAI) {
+    theAI.assignShips(ship2, ship1);
+  }
   noise.amp(0.5);
   gamePaused = true;
 
@@ -286,4 +297,7 @@ void draw()
   }
   ship2.render(); 
   
+  if(!gamePaused && useAI) {
+    theAI.control();
+  }
 }

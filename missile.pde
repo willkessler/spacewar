@@ -13,11 +13,9 @@
 // X thrust display on missiles
 // X collisions with the other missile
 // X collisions with the other missile
-
-// missile explosion
+// X missile explosion
+// X missile explodes near ship, ship blows up
 // when missiles "die" because they time out, play explosion but fizzle
-// run out of fuel becuase missile is stupid (? do they stop tracking and just fly for a while?)
-// missile explodes near ship, it blows up
 
 class Missile {
 
@@ -32,7 +30,7 @@ class Missile {
   Ship enemyShip;
   float enemyRange = windowSize; // can track you over entire screen right now
   float enemyAngleTolerance = 360;
-  float mass = .4;
+  float mass = .5;
   float missileLaunchForce = 1;
   float missileSmartFactor = 0.045;
   float maxSpeed = 3;
@@ -60,7 +58,7 @@ class Missile {
     return parent.shipColor;
   }
   
-  // calculate if the enemy ship is near enough to "see" and in front of the missile. Return a zero vector is not.
+  // calculate if the enemy ship is near enough to "see" and in front of the missile. Return a zero vector if not.
   // otherwise return a vector indicating a velocity change to track the enemy
   PVector calculateEnemyShipDirection() {
     PVector adjustment = new PVector(0,0);
@@ -113,11 +111,25 @@ class Missile {
     missileShot.play();
   }
   
+  void checkIfShouldKillEnemyShip() {
+    float distanceFromEnemyShip;
+    PVector missileToShip = new PVector(0,0);
+    missileToShip.set(enemyShip.pos);
+    missileToShip.sub(pos);
+    distanceFromEnemyShip = missileToShip.mag();
+
+    float blowupDistance = 200;
+    if (distanceFromEnemyShip < blowupDistance) {
+     enemyShip.blowUp();
+    }
+ }
+  
   void die() {
     live = false;
     playRandomExplosionSound();
     missileExplosion.start();
  }
+ 
   
   boolean isLive () {
     return live;
@@ -128,8 +140,8 @@ class Missile {
   }
   
   void update() {
-    if (!live) {
-      return;
+    if (gamePaused || !live) {
+     return; 
     }
     if (enemyShip.getShipState() != 0) {
       die();
@@ -164,6 +176,7 @@ class Missile {
     ttl -= 1;
     if (ttl == 0) {
       die();
+      checkIfShouldKillEnemyShip();
     }
     accel.mult(0);
   }
