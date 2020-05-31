@@ -1,8 +1,8 @@
-// shoots when aming at player
+// X shoots when aiming at player
 // runs a randomizer every time its too far away for a bullet, it tries to fire a missile
 // it trys to avoid the sun, and the planet 
 // in the begining of the game, you can choose between 2-players and vs the AI
-// if only thrusts when it needs to get near the player or away from the planet or sun
+// it only thrusts when it needs to get near the player or away from the planet or sun
 // makes sure to not overheat but sometimes messes up like a human
 
 class AI {
@@ -12,6 +12,8 @@ class AI {
   boolean activateMissile;
   int minThrustTime = 150; // we will never apply thrust for less than this many draw cycles
   int thrustTimeCountdown = 0;
+  int minMissileTime = 500;
+  int missileTimeCountdown = 0; // we won't fire missiles too soon after last missile
   boolean otherShipInGunsight = false;
   
   // constructor
@@ -98,7 +100,8 @@ class AI {
   }
   
   void avoidOverheating() {
-    if (parentShip.engineGettingTooHot()) {
+    float stupidityFactor = random(0,1); // like a human, sometimes it (randomly?) ignores the overheating indicator!
+    if (parentShip.engineGettingTooHot() && stupidityFactor > 0.95) {
       activateThrust = false; // deactivate the thrust if we're close to overheating
       parentShip.cancelThrust();
     }
@@ -121,8 +124,11 @@ class AI {
     }
     activateBulletFire = false;
     
-    if (activateMissile) {
-      parentShip.fireMissile();
+    if (missileTimeCountdown > 0) {
+      missileTimeCountdown--; // don't fire another missile too soon
+    } else if (activateMissile) {
+        parentShip.fireMissile();
+        missileTimeCountdown = minMissileTime;
     }
     activateMissile = false;
  }
