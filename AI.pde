@@ -16,7 +16,7 @@ class AI {
   
   // constructor
   AI () {
-    println("Created an AI");
+    println("Created the AI.");
     activateThrust = false;
     activateBulletFire = false;
     activateMissile = false;
@@ -57,17 +57,23 @@ class AI {
     }
     
   }
-    
-  void fireAtOtherShip() {
+  
+  boolean inFiringRange(float likelihood) {
     float timeToFire = random(0,1);
     PVector p1, p2;
     p1 = parentShip.getShipPos();
     p2 = otherShip.getShipPos();
     float distToOtherShip = p1.dist(p2);
-    activateBulletFire |= (distToOtherShip < windowSize / 4) && (timeToFire < 0.25) && otherShipInGunsight;
+    return (distToOtherShip < windowSize / 4) && (timeToFire < likelihood) && otherShipInGunsight;
   }
-  
+
   void fireMissileAtOtherShip() {
+    float timeToFire = random(0,1);
+    PVector p1, p2;
+    p1 = parentShip.getShipPos();
+    p2 = otherShip.getShipPos();
+    float distToOtherShip = p1.dist(p2);
+    activateMissile |= (distToOtherShip < windowSize / 4) && (timeToFire < 0.01) && otherShipInGunsight;
   }
   
   void tryToThrust() {
@@ -113,8 +119,12 @@ class AI {
     if (activateBulletFire) {
       parentShip.fireBullet();
     }
-
     activateBulletFire = false;
+    
+    if (activateMissile) {
+      parentShip.fireMissile();
+    }
+    activateMissile = false;
  }
   
   // control the ship
@@ -124,8 +134,8 @@ class AI {
     avoidMissile();
     attackOtherShip();    
     avoidOverheating();
-    fireAtOtherShip();
-    fireMissileAtOtherShip();
+    activateBulletFire = inFiringRange(0.25);
+    activateMissile = inFiringRange(0.05);
     
     takeAction();
   }
