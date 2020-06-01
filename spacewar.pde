@@ -28,6 +28,7 @@ float shipHeight = shipWidth * 1.5;
 float halfShipHeight = shipHeight / 2;
 float halfShipWidth = shipWidth / 2;
 boolean gamePaused;
+boolean gameOver;
 boolean useAI = true;
 
 SoundFile[] explosions;
@@ -52,9 +53,9 @@ void keyPressed() {
    case '1':
    case '2':
      if (gamePaused == true) {
-       gamePaused = false;
+       setGameUnPaused();
      } else {
-       gamePaused = true;
+       setGamePaused();
      }
    
      if (key == '2') {
@@ -181,6 +182,18 @@ void playRandomExplosionSound() {
   explosions[randomExplosionSound].play();
 }
 
+void setGameUnPaused() {
+  gamePaused = false;
+}
+
+void setGamePaused() {
+  gamePaused = true;
+}
+
+void setGameOver() {
+  gameOver = true;
+}
+
 // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE =-=-==-=-==-=-==-=-==-=-==-=-=
 
 void setup()
@@ -220,7 +233,8 @@ void setup()
     theAI.assignShips(ship2, ship1);
   }
   noise.amp(0.5);
-  gamePaused = true;
+  setGamePaused();
+  gameOver = false;
 
 }
 

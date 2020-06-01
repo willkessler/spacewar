@@ -21,12 +21,15 @@ class Ship {
   Missile missile;
   int hyperspaceTimeLimit = 500; // number of draw cycles before you can do another hyperspace
   int hyperspaceCountdown;
+  int totalLives = 5; // how many lives your ship gets before GAME OVER
+  int livesLeft;
   
   Ship(int id, float x, float y, color sColor) {
     score = 0;
     accel = new PVector(0,0);
     vel = new PVector(random(-0.5, 0.5), random(-0.5, 0.5));
     pos = new PVector(x,y);
+    livesLeft = totalLives;
     maxSpeed = 5;
     shipWidth = 15;
     shipColor = sColor;    
@@ -83,6 +86,10 @@ class Ship {
   
   int getShipColor() {
     return shipColor;
+  }
+  
+  int getLivesLeft() {
+    return livesLeft;
   }
     
   void fireBullet() {
@@ -253,6 +260,13 @@ class Ship {
     engineTemp = 0;
     playRandomExplosionSound();
     cancelThrust();
+    
+    livesLeft = livesLeft - 1;
+    if (livesLeft == 0) {
+      // GAME OVER! A ship is out of lives.
+      setGameOver();
+      setGamePaused();
+    }
   }
   
   

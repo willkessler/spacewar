@@ -41,7 +41,13 @@ class Stats {
      text(displays[ship.getShipState()], leftOffset, 40);
    }
    
-   
+   void renderLivesLeft(Ship ship) {
+     // display how many lives ya got left
+     int leftOffset = ship.shipId == 0 ? 10 : width - 120;
+     fill(ship.getShipColor());
+     text("Ships left:" + ship.getLivesLeft(), leftOffset, 110);
+   }
+ 
   
   void render(Ship ship1, Ship ship2) {
     textFont(f);
@@ -54,18 +60,28 @@ class Stats {
     
     
     if (gamePaused == true) {
-      fill (200);
-      text ("Welcome to Spacewar!   ", 20, windowSize - 110);
-      text ("ship1: WASDE keys. ship2: IJKLU keys. " , 20, windowSize - 90);
-      text ("space key = hyperspace, 0 or 1 key = pause.", 20, windowSize - 70);
-      text ("Start-> Press 1 for 1 player, 2 for 2 player" , 20, windowSize - 50); 
-  }
+      if (gameOver) {
+        textFont(f, 48);
+        text("GAME   OVER", windowSize / 2 - 160, windowSize / 2 );
+        textFont(f, 16); // reset font size
+      } else {  
+        fill (200);
+        text ("Welcome to Spacewar!   ", 20, windowSize - 110);
+        text ("ship1: WASDE keys. ship2: IJKLU keys. " , 20, windowSize - 90);
+        text ("space key = hyperspace, 0 or 1 key = pause.", 20, windowSize - 70);
+        text ("Start-> Press 1 for 1 player, 2 for 2 player" , 20, windowSize - 50); 
+      }
+    }
     
     
-   renderShipStatus(ship1);
-   renderShipStatus(ship2);
+    renderShipStatus(ship1);
+    renderShipStatus(ship2);
     
     renderEngineTemp(ship1);
     renderEngineTemp(ship2);
+    
+    renderLivesLeft(ship1);
+    renderLivesLeft(ship2);
+
   }
 }
