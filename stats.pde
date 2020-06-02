@@ -53,11 +53,6 @@ class Stats {
      fill(ship.getShipColor());
      //text("Ships left:" + ship.getLivesLeft(), leftOffset, 110);
      
-     PVector shipIconPos = new PVector(0,0);
-     for (int i = 0; i < ship.getLivesLeft(); ++i) {
-       shipIconPos.set(leftOffset + (10 * i), 105); 
-       ship.drawShip(shipIconPos, 0.0, 0.5, ship.getShipColor(), false);
-     }
    }
  
   
