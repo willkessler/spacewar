@@ -49,9 +49,15 @@ class Stats {
    
    void renderLivesLeft(Ship ship) {
      // display how many lives ya got left
-     int leftOffset = ship.shipId == 0 ? 10 : width - 120;
+     int leftOffset = ship.shipId == 0 ? 20 : width - 110;
      fill(ship.getShipColor());
-     text("Ships left:" + ship.getLivesLeft(), leftOffset, 110);
+     //text("Ships left:" + ship.getLivesLeft(), leftOffset, 110);
+     
+     PVector shipIconPos = new PVector(0,0);
+     for (int i = 0; i < ship.getLivesLeft(); ++i) {
+       shipIconPos.set(leftOffset + (10 * i), 105); 
+       ship.drawShip(shipIconPos, 0.0, 0.5, ship.getShipColor(), false);
+     }
    }
  
   
@@ -96,7 +102,7 @@ class Stats {
       scale(gameOverScale);
       rotate(radians(gameOverRot));
       textFont(f, 64);
-      text("GAME   OVER!", -210,0 );
+      text("GAME   OVER!", -215,0 );
       popMatrix();
       textFont(f,16);// reset font size
       fill(winnerShipId == 2 ? ship2.getShipColor() : ship1.getShipColor() );

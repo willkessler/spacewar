@@ -118,7 +118,7 @@ class Missile {
     missileToShip.sub(pos);
     distanceFromEnemyShip = missileToShip.mag();
 
-    float blowupDistance = 200;
+    float blowupDistance = 50;
     if (distanceFromEnemyShip < blowupDistance) {
      enemyShip.blowUp();
     }

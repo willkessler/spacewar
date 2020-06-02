@@ -268,6 +268,33 @@ class Ship {
     }
   }
   
+  void drawShip(PVector pos, float rot, float proportion, color shipColor, boolean drawThrust) {
+    pushMatrix();
+    translate(pos.x,pos.y);
+    scale(proportion);
+    rotate(radians(rot));
+    fill(0);
+    stroke(shipColor);
+    beginShape();
+    vertex(-halfShipWidth,  halfShipHeight);
+    vertex(0,  -halfShipHeight);
+    vertex(halfShipWidth,  halfShipHeight);
+    vertex(0, halfShipHeight / 2);
+    endShape(CLOSE);
+    if (drawThrust) {
+      // draw flames
+      float flicker = random(0,10) / 10 + 1; 
+      fill(255 * flicker,255 * flicker,0);
+      stroke(255 * flicker,255 * flicker,0);
+      beginShape();
+      vertex(-halfShipWidth / 2, halfShipHeight * 1.1);
+      vertex(0, halfShipHeight * 1.6 * flicker);
+      vertex(halfShipWidth / 2, halfShipHeight * 1.1);
+      vertex(0, halfShipHeight * 1.4);
+      endShape(CLOSE);
+    }
+    popMatrix();
+  }
   
 // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE FOR SHIPS =-=-==-=-==-=-==-=-==-=-==-=-= 
   
@@ -322,30 +349,6 @@ class Ship {
       }
     }
     
-   pushMatrix();
-    translate(pos.x,pos.y);
-    rotate(radians(rot));
-    fill(0);
-    stroke(shipColor);
-    beginShape();
-    vertex(-halfShipWidth,  halfShipHeight);
-    vertex(0,  -halfShipHeight);
-    vertex(halfShipWidth,  halfShipHeight);
-    vertex(0, halfShipHeight / 2);
-    endShape(CLOSE);
-    if (thrustOn) {
-      // draw flames
-      float flicker = random(0,10) / 10 + 1; 
-      fill(255 * flicker,255 * flicker,0);
-      stroke(255 * flicker,255 * flicker,0);
-      beginShape();
-      vertex(-halfShipWidth / 2, halfShipHeight * 1.1);
-      vertex(0, halfShipHeight * 1.6 * flicker);
-      vertex(halfShipWidth / 2, halfShipHeight * 1.1);
-      vertex(0, halfShipHeight * 1.4);
-      endShape(CLOSE);
-    }
-    popMatrix();
-    
+    drawShip(pos, rot, 1.0, shipColor, thrustOn);    
    }
 }

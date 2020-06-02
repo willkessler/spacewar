@@ -14,8 +14,11 @@ class Planet {
     planetColor = color(40,40,255);
     float orbitDistance = random(150,200);
     float orbitalVelocity = random(-110,-85);
-    pos = new PVector(windowSize /2 + orbitDistance, windowSize/2);
-    vel = new PVector(0,orbitalVelocity);
+    float initialAngle = -55;
+    float initialAngleRadians = radians(initialAngle);
+    float initialVelAngleRadians = radians(initialAngle - 90);
+    pos = new PVector(windowSize /2 + cos(initialAngleRadians) * orbitDistance, windowSize/2 + sin(initialAngleRadians) * orbitDistance);
+    vel = new PVector(cos(initialVelAngleRadians) * orbitalVelocity, sin(initialVelAngleRadians) * orbitalVelocity);
     accel = new PVector(0,0);
   }
   
