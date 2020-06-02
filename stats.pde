@@ -3,12 +3,14 @@ class Stats {
  int[] scores;
  PFont f;
  float gameOverRot;
+ float gameOpeningScale;
  float gameOverScale;
  
   Stats() {
    f = createFont("Courier",16,true);
    gameOverRot = 135;
    gameOverScale = 6;
+   gameOpeningScale = 16;
   }
  
   void hideInstructions () {
@@ -68,6 +70,16 @@ class Stats {
       text ("ship1: WASDE keys. ship2: IJKLU keys. " , 20, windowSize - 90);
       text ("space key = hyperspace, 0 or 1 key = pause.", 20, windowSize - 70);
       text ("Start-> Press 1 for 1 player, 2 for 2 player" , 20, windowSize - 50); 
+      
+      fill(255);
+      pushMatrix();
+      translate(windowSize / 2 , windowSize / 2 + 20);
+      scale(gameOpeningScale);
+      textFont(f, 64);
+      text("SPACE    WAR!", -270,0 );
+      popMatrix();
+      textFont(f,16);// reset font size
+      gameOpeningScale = max(1.0, gameOpeningScale - 0.25);
     } else if (gameOver()) {
       int ship1Score = ship1.getScore();
       int ship2Score = ship2.getScore();
@@ -86,11 +98,11 @@ class Stats {
       textFont(f, 64);
       text("GAME   OVER!", -210,0 );
       popMatrix();
-      textFont(f, 16); // reset font size
+      textFont(f,16);// reset font size
       fill(winnerShipId == 2 ? ship2.getShipColor() : ship1.getShipColor() );
       text("Winner:  Ship " + winnerShipId, windowSize / 2 - 80 , windowSize / 2 + 60);
     }    
-    
+
     renderShipStatus(ship1);
     renderShipStatus(ship2);
     

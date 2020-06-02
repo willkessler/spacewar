@@ -321,12 +321,17 @@ void draw()
   if (gamePlaying()) {
     ship1.update();
   }
-  ship1.render();  
+  if (!gameOver()) {
+    ship1.render();  
+  }
   
   if (gamePlaying()) {
     ship2.update();
   }
-  ship2.render(); 
+  
+  if (!gameOver()) {
+    ship2.render(); 
+  }
   
   if(gamePlaying() && useAI) {
     theAI.control();

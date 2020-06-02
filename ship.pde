@@ -21,7 +21,7 @@ class Ship {
   Missile missile;
   int hyperspaceTimeLimit = 500; // number of draw cycles before you can do another hyperspace
   int hyperspaceCountdown;
-  int totalLives = 1; // how many lives your ship gets before GAME OVER
+  int totalLives = 5; // how many lives your ship gets before GAME OVER
   int livesLeft;
   
   Ship(int id, float x, float y, color sColor) {
