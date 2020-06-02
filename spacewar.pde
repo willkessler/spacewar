@@ -34,6 +34,7 @@ SoundFile[] explosions;
 SoundFile gunshot;
 SoundFile engineAlarm;
 SoundFile missileShot;
+SoundFile bigSwoosh;
 Stats stats;
 WhiteNoise noise = new WhiteNoise(this);
 
@@ -199,6 +200,7 @@ boolean gameOver() {
 
 void setGameOpening() {
   gameStatus = 0; // opening
+  bigSwoosh.play();
 }
 
 void setGamePlaying() {
@@ -237,6 +239,7 @@ void setup()
   gunshot = new SoundFile(this, "Gun+Silencer.mp3");
   engineAlarm = new SoundFile(this, "beep-07.mp3");
   missileShot = new SoundFile(this, "Missile+2.mp3");
+  bigSwoosh = new SoundFile(this, "bigswoosh.mp3");
   //println("does this update git hub?????? ");
   
   size(800,800);
