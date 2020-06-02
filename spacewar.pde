@@ -27,8 +27,7 @@ float shipWidth = 15;
 float shipHeight = shipWidth * 1.5;
 float halfShipHeight = shipHeight / 2;
 float halfShipWidth = shipWidth / 2;
-boolean gamePaused;
-boolean gameOver;
+int gameStatus; // 0 == opening, 1 == playing, 2 == paused, 3 == game over
 boolean useAI = true;
 
 SoundFile[] explosions;
@@ -52,8 +51,8 @@ void keyPressed() {
    case '0':
    case '1':
    case '2':
-     if (gamePaused == true) {
-       setGameUnPaused();
+     if (gameOpening() || gamePaused()) {
+       setGamePlaying();
      } else {
        setGamePaused();
      }
@@ -182,16 +181,36 @@ void playRandomExplosionSound() {
   explosions[randomExplosionSound].play();
 }
 
-void setGameUnPaused() {
-  gamePaused = false;
+boolean gameOpening() {
+  return gameStatus == 0;
+}
+
+boolean gamePlaying() {
+  return gameStatus == 1;
+}
+
+boolean gamePaused() {
+  return gameStatus == 2;
+}
+
+boolean gameOver() {
+  return gameStatus == 3;
+}
+
+void setGameOpening() {
+  gameStatus = 0; // opening
+}
+
+void setGamePlaying() {
+  gameStatus = 1; // playing
 }
 
 void setGamePaused() {
-  gamePaused = true;
+  gameStatus = 2; // paused
 }
 
 void setGameOver() {
-  gameOver = true;
+  gameStatus = 3; // game over
 }
 
 // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE =-=-==-=-==-=-==-=-==-=-==-=-=
@@ -233,9 +252,7 @@ void setup()
     theAI.assignShips(ship2, ship1);
   }
   noise.amp(0.5);
-  setGamePaused();
-  gameOver = false;
-
+  setGameOpening();
 }
 
 void draw()
@@ -244,7 +261,7 @@ void draw()
   theStars.render();
   theStars.renderSun(25);
   stats.render(ship1,ship2);
-  if (!gamePaused) {
+  if (gamePlaying()) {
     thePlanet.update();
   }
   thePlanet.render();
@@ -301,17 +318,17 @@ void draw()
     ship2.addPoints(-killPoints);
   }
   
-  if (!gamePaused) {
+  if (gamePlaying()) {
     ship1.update();
   }
   ship1.render();  
   
-  if (!gamePaused) {
+  if (gamePlaying()) {
     ship2.update();
   }
   ship2.render(); 
   
-  if(!gamePaused && useAI) {
+  if(gamePlaying() && useAI) {
     theAI.control();
   }
 }

@@ -21,7 +21,7 @@ class Ship {
   Missile missile;
   int hyperspaceTimeLimit = 500; // number of draw cycles before you can do another hyperspace
   int hyperspaceCountdown;
-  int totalLives = 5; // how many lives your ship gets before GAME OVER
+  int totalLives = 1; // how many lives your ship gets before GAME OVER
   int livesLeft;
   
   Ship(int id, float x, float y, color sColor) {
@@ -93,7 +93,7 @@ class Ship {
   }
     
   void fireBullet() {
-    if (missile.isLive() || gamePaused) {
+    if (missile.isLive() || gamePaused() || gameOver()) {
       return; // can't fire bullets while your missile is away! or the game is paused
     }
 
@@ -200,7 +200,7 @@ class Ship {
   }
   
   void applyThrust() {
-    if (gamePaused) {
+    if (gamePaused() || gameOver()) {
       return;
     }
     if (shipState == 0) { // can't accelerate if not alive
@@ -265,7 +265,6 @@ class Ship {
     if (livesLeft == 0) {
       // GAME OVER! A ship is out of lives.
       setGameOver();
-      setGamePaused();
     }
   }
   

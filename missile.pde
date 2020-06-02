@@ -140,7 +140,7 @@ class Missile {
   }
   
   void update() {
-    if (gamePaused || !live) {
+    if (gamePaused() || !live) {
      return; 
     }
     if (enemyShip.getShipState() != 0) {

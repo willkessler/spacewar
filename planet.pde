@@ -52,7 +52,7 @@ class Planet {
     //sphere(radius);
     popMatrix();
     
-    if (!gamePaused){
+    if (!gamePaused()){
     
       innerSpin = innerSpin + innerSpinInc;
       if (innerSpin > 10) {
