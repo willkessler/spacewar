@@ -17,7 +17,7 @@
 // X planet has gravity!
 // X heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
 // X AI choice between 1 player and 2 player
-// limited number of ships (10), and then game over. whoever has the most points wins
+// X limited number of ships (5), and then game over. whoever has the most points wins
 
 
 import processing.sound.*;
@@ -27,13 +27,15 @@ float shipWidth = 15;
 float shipHeight = shipWidth * 1.5;
 float halfShipHeight = shipHeight / 2;
 float halfShipWidth = shipWidth / 2;
-boolean gamePaused;
+int gameStatus; // 0 == opening, 1 == playing, 2 == paused, 3 == game over
 boolean useAI = true;
 
 SoundFile[] explosions;
 SoundFile gunshot;
 SoundFile engineAlarm;
 SoundFile missileShot;
+SoundFile bigSwoosh;
+SoundFile gameOverNoise;
 Stats stats;
 WhiteNoise noise = new WhiteNoise(this);
 
@@ -51,10 +53,10 @@ void keyPressed() {
    case '0':
    case '1':
    case '2':
-     if (gamePaused == true) {
-       gamePaused = false;
+     if (gameOpening() || gamePaused()) {
+       setGamePlaying();
      } else {
-       gamePaused = true;
+       setGamePaused();
      }
    
      if (key == '2') {
@@ -181,6 +183,40 @@ void playRandomExplosionSound() {
   explosions[randomExplosionSound].play();
 }
 
+boolean gameOpening() {
+  return gameStatus == 0;
+}
+
+boolean gamePlaying() {
+  return gameStatus == 1;
+}
+
+boolean gamePaused() {
+  return gameStatus == 2;
+}
+
+boolean gameOver() {
+  return gameStatus == 3;
+}
+
+void setGameOpening() {
+  gameStatus = 0; // opening
+  bigSwoosh.play();
+}
+
+void setGamePlaying() {
+  gameStatus = 1; // playing
+}
+
+void setGamePaused() {
+  gameStatus = 2; // paused
+}
+
+void setGameOver() {
+  gameStatus = 3; // game over
+  gameOverNoise.play();
+}
+
 // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE =-=-==-=-==-=-==-=-==-=-==-=-=
 
 void setup()
@@ -205,6 +241,9 @@ void setup()
   gunshot = new SoundFile(this, "Gun+Silencer.mp3");
   engineAlarm = new SoundFile(this, "beep-07.mp3");
   missileShot = new SoundFile(this, "Missile+2.mp3");
+  bigSwoosh = new SoundFile(this, "bigswoosh.mp3");
+  gameOverNoise = new SoundFile(this, "smb_gameover.wav");
+  
   //println("does this update git hub?????? ");
   
   size(800,800);
@@ -220,8 +259,7 @@ void setup()
     theAI.assignShips(ship2, ship1);
   }
   noise.amp(0.5);
-  gamePaused = true;
-
+  setGameOpening();
 }
 
 void draw()
@@ -230,7 +268,7 @@ void draw()
   theStars.render();
   theStars.renderSun(25);
   stats.render(ship1,ship2);
-  if (!gamePaused) {
+  if (gamePlaying()) {
     thePlanet.update();
   }
   thePlanet.render();
@@ -287,17 +325,22 @@ void draw()
     ship2.addPoints(-killPoints);
   }
   
-  if (!gamePaused) {
+  if (gamePlaying()) {
     ship1.update();
   }
-  ship1.render();  
+  if (!gameOver()) {
+    ship1.render();  
+  }
   
-  if (!gamePaused) {
+  if (gamePlaying()) {
     ship2.update();
   }
-  ship2.render(); 
   
-  if(!gamePaused && useAI) {
+  if (!gameOver()) {
+    ship2.render(); 
+  }
+  
+  if(gamePlaying() && useAI) {
     theAI.control();
   }
 }

@@ -21,12 +21,15 @@ class Ship {
   Missile missile;
   int hyperspaceTimeLimit = 500; // number of draw cycles before you can do another hyperspace
   int hyperspaceCountdown;
+  int totalLives = 5; // how many lives your ship gets before GAME OVER
+  int livesLeft;
   
   Ship(int id, float x, float y, color sColor) {
     score = 0;
     accel = new PVector(0,0);
     vel = new PVector(random(-0.5, 0.5), random(-0.5, 0.5));
     pos = new PVector(x,y);
+    livesLeft = totalLives;
     maxSpeed = 5;
     shipWidth = 15;
     shipColor = sColor;    
@@ -84,9 +87,13 @@ class Ship {
   int getShipColor() {
     return shipColor;
   }
+  
+  int getLivesLeft() {
+    return livesLeft;
+  }
     
   void fireBullet() {
-    if (missile.isLive() || gamePaused) {
+    if (missile.isLive() || gamePaused() || gameOver()) {
       return; // can't fire bullets while your missile is away! or the game is paused
     }
 
@@ -193,7 +200,7 @@ class Ship {
   }
   
   void applyThrust() {
-    if (gamePaused) {
+    if (gamePaused() || gameOver()) {
       return;
     }
     if (shipState == 0) { // can't accelerate if not alive
@@ -253,8 +260,41 @@ class Ship {
     engineTemp = 0;
     playRandomExplosionSound();
     cancelThrust();
+    
+    livesLeft = livesLeft - 1;
+    if (livesLeft == 0) {
+      // GAME OVER! A ship is out of lives.
+      setGameOver();
+    }
   }
   
+  void drawShip(PVector pos, float rot, float proportion, color shipColor, boolean drawThrust) {
+    pushMatrix();
+    translate(pos.x,pos.y);
+    scale(proportion);
+    rotate(radians(rot));
+    fill(0);
+    stroke(shipColor);
+    beginShape();
+    vertex(-halfShipWidth,  halfShipHeight);
+    vertex(0,  -halfShipHeight);
+    vertex(halfShipWidth,  halfShipHeight);
+    vertex(0, halfShipHeight / 2);
+    endShape(CLOSE);
+    if (drawThrust) {
+      // draw flames
+      float flicker = random(0,10) / 10 + 1; 
+      fill(255 * flicker,255 * flicker,0);
+      stroke(255 * flicker,255 * flicker,0);
+      beginShape();
+      vertex(-halfShipWidth / 2, halfShipHeight * 1.1);
+      vertex(0, halfShipHeight * 1.6 * flicker);
+      vertex(halfShipWidth / 2, halfShipHeight * 1.1);
+      vertex(0, halfShipHeight * 1.4);
+      endShape(CLOSE);
+    }
+    popMatrix();
+  }
   
 // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE FOR SHIPS =-=-==-=-==-=-==-=-==-=-==-=-= 
   
@@ -309,30 +349,6 @@ class Ship {
       }
     }
     
-   pushMatrix();
-    translate(pos.x,pos.y);
-    rotate(radians(rot));
-    fill(0);
-    stroke(shipColor);
-    beginShape();
-    vertex(-halfShipWidth,  halfShipHeight);
-    vertex(0,  -halfShipHeight);
-    vertex(halfShipWidth,  halfShipHeight);
-    vertex(0, halfShipHeight / 2);
-    endShape(CLOSE);
-    if (thrustOn) {
-      // draw flames
-      float flicker = random(0,10) / 10 + 1; 
-      fill(255 * flicker,255 * flicker,0);
-      stroke(255 * flicker,255 * flicker,0);
-      beginShape();
-      vertex(-halfShipWidth / 2, halfShipHeight * 1.1);
-      vertex(0, halfShipHeight * 1.6 * flicker);
-      vertex(halfShipWidth / 2, halfShipHeight * 1.1);
-      vertex(0, halfShipHeight * 1.4);
-      endShape(CLOSE);
-    }
-    popMatrix();
-    
+    drawShip(pos, rot, 1.0, shipColor, thrustOn);    
    }
 }

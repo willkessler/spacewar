@@ -2,14 +2,20 @@ class Stats {
  boolean showInstructions = true;
  int[] scores;
  PFont f;
+ float gameOverRot;
+ float gameOpeningScale;
+ float gameOverScale;
  
   Stats() {
-   f = createFont("Courier",16,true); 
+   f = createFont("Courier",16,true);
+   gameOverRot = 135;
+   gameOverScale = 6;
+   gameOpeningScale = 16;
   }
  
- void hideInstructions () {
-   showInstructions = false;  
- }
+  void hideInstructions () {
+    showInstructions = false;  
+  }
  
   void  renderEngineTemp (Ship ship) {
     int barHeight = 10;
@@ -41,7 +47,22 @@ class Stats {
      text(displays[ship.getShipState()], leftOffset, 40);
    }
    
-   
+   void renderLivesLeft(Ship ship) {
+     // display how many lives ya got left
+     int leftOffset = ship.shipId == 0 ? 20 : width - 110;
+     fill(ship.getShipColor());
+     //text("Ships left:" + ship.getLivesLeft(), leftOffset, 110);
+     PVector pos = new PVector( leftOffset, 110);
+     float rot = 0;
+     color shipColor = ship.getShipColor();
+     boolean thrustOn = false;
+     int livesLeft = ship.getLivesLeft();
+     for (int i = 0; i < livesLeft; i++) {
+       pos.set (leftOffset + i * 16, 110);
+       ship.drawShip(pos, rot, 0.75, shipColor, thrustOn);
+     }
+   }
+ 
   
   void render(Ship ship1, Ship ship2) {
     textFont(f);
@@ -51,21 +72,54 @@ class Stats {
     // player 2 score
     fill(255,0,0);
     text("Player2: " + ship2.getScore(),width - 120,20);
-    
-    
-    if (gamePaused == true) {
+        
+    if (gameOpening()) {
       fill (200);
       text ("Welcome to Spacewar!   ", 20, windowSize - 110);
       text ("ship1: WASDE keys. ship2: IJKLU keys. " , 20, windowSize - 90);
       text ("space key = hyperspace, 0 or 1 key = pause.", 20, windowSize - 70);
       text ("Start-> Press 1 for 1 player, 2 for 2 player" , 20, windowSize - 50); 
-  }
-    
-    
-   renderShipStatus(ship1);
-   renderShipStatus(ship2);
+      
+      fill(255);
+      pushMatrix();
+      translate(windowSize / 2 , windowSize / 2 + 20);
+      scale(gameOpeningScale);
+      textFont(f, 64);
+      text("SPACE    WAR!", -270,0 );
+      popMatrix();
+      textFont(f,16);// reset font size
+      gameOpeningScale = max(1.0, gameOpeningScale - 0.25);
+    } else if (gameOver()) {
+      int ship1Score = ship1.getScore();
+      int ship2Score = ship2.getScore();
+      int winnerShipId;
+      if (ship1Score == ship2Score) {
+        winnerShipId = ship1.getLivesLeft() == 0 ? 2 : 1;
+      } else {
+        winnerShipId = ship1Score < ship2Score ? 2 : 1;
+      }
+      gameOverRot = max(0, gameOverRot - 5);
+      gameOverScale = max(1.0, gameOverScale - 0.2);
+      pushMatrix();
+      translate(windowSize / 2 , windowSize / 2 + 20);
+      scale(gameOverScale);
+      rotate(radians(gameOverRot));
+      textFont(f, 64);
+      text("GAME   OVER!", -215,0 );
+      popMatrix();
+      textFont(f,16);// reset font size
+      fill(winnerShipId == 2 ? ship2.getShipColor() : ship1.getShipColor() );
+      text("Winner:  Ship " + winnerShipId, windowSize / 2 - 80 , windowSize / 2 + 60);
+    }    
+
+    renderShipStatus(ship1);
+    renderShipStatus(ship2);
     
     renderEngineTemp(ship1);
     renderEngineTemp(ship2);
+    
+    renderLivesLeft(ship1);
+    renderLivesLeft(ship2);
+
   }
 }
