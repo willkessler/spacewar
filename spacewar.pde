@@ -17,7 +17,7 @@
 // X planet has gravity!
 // X heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
 // X AI choice between 1 player and 2 player
-// limited number of ships (5), and then game over. whoever has the most points wins
+// X limited number of ships (5), and then game over. whoever has the most points wins
 
 
 import processing.sound.*;
