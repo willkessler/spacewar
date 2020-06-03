@@ -52,7 +52,15 @@ class Stats {
      int leftOffset = ship.shipId == 0 ? 20 : width - 110;
      fill(ship.getShipColor());
      //text("Ships left:" + ship.getLivesLeft(), leftOffset, 110);
-     
+     PVector pos = new PVector( leftOffset, 110);
+     float rot = 0;
+     color shipColor = ship.getShipColor();
+     boolean thrustOn = false;
+     int livesLeft = ship.getLivesLeft();
+     for (int i = 0; i < livesLeft; i++) {
+       pos.set (leftOffset + i * 16, 110);
+       ship.drawShip(pos, rot, 0.75, shipColor, thrustOn);
+     }
    }
  
   

@@ -17,7 +17,7 @@
 // X planet has gravity!
 // X heat-seaking missile... dumb, runs out of fuel, can't turn that fast, only sees in front of it
 // X AI choice between 1 player and 2 player
-// limited number of ships (10), and then game over. whoever has the most points wins
+// limited number of ships (5), and then game over. whoever has the most points wins
 
 
 import processing.sound.*;
@@ -35,6 +35,7 @@ SoundFile gunshot;
 SoundFile engineAlarm;
 SoundFile missileShot;
 SoundFile bigSwoosh;
+SoundFile gameOverNoise;
 Stats stats;
 WhiteNoise noise = new WhiteNoise(this);
 
@@ -213,6 +214,7 @@ void setGamePaused() {
 
 void setGameOver() {
   gameStatus = 3; // game over
+  gameOverNoise.play();
 }
 
 // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE =-=-==-=-==-=-==-=-==-=-==-=-=
@@ -240,6 +242,8 @@ void setup()
   engineAlarm = new SoundFile(this, "beep-07.mp3");
   missileShot = new SoundFile(this, "Missile+2.mp3");
   bigSwoosh = new SoundFile(this, "bigswoosh.mp3");
+  gameOverNoise = new SoundFile(this, "smb_gameover.wav");
+  
   //println("does this update git hub?????? ");
   
   size(800,800);
