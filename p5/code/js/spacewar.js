@@ -218,6 +218,7 @@ const spacewarMain = function(p5) {
     ship2.setEnemyShip(ship1);
     
     return;
+
     thePlanet = new Planet(p5, windowSize);
     theAI = new AI(p5, windowSize);
     
