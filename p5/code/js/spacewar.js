@@ -1,4 +1,4 @@
-const spacewarMain = function(p) {
+const spacewarMain = function(p5) {
 
   const windowSize = 800;
   const shipWidth = 15;
@@ -26,7 +26,7 @@ const spacewarMain = function(p) {
 
   // =-=-==-=-==-=-==-=-==-=-==-=-= UTILITY FUNCTIONS =-=-==-=-==-=-==-=-==-=-==-=-=
 
-  p.keyPressed = (key) => {  
+  p5.keyPressed = (key) => {  
     stats.hideInstructions();
     switch (key) {
     case '0':
@@ -79,7 +79,7 @@ const spacewarMain = function(p) {
     } 
   }
 
-  p.keyReleased = (key) => {
+  p5.keyReleased = (key) => {
     switch (key) {
     case 's':
       ship1.cancelThrust();
@@ -105,7 +105,7 @@ const spacewarMain = function(p) {
   }
 
   // wrap a moving object around screen edges
-  p.wrapAroundEdges = (pos) => {
+  p5.wrapAroundEdges = (pos) => {
     if (pos.x < 0) {
       pos.x = windowSize; 
     }
@@ -120,13 +120,13 @@ const spacewarMain = function(p) {
     }
   }
 
-  p.insideSun = (pos) => {
+  p5.insideSun = (pos) => {
     const halfWindow = windowSize / 2;
 
     return ((abs(halfWindow - pos.x) < 10) && (abs(halfWindow - pos.y) < 10));  
   }
 
-  p.calculateGravityForce = (gravityWellPos, pos, mass, G) => {
+  p5.calculateGravityForce = (gravityWellPos, pos, mass, G) => {
     const distToWell = pos.dist(gravityWellPos);
     const shipToWellVector = PVector.sub(gravityWellPos, pos);
     shipToWellVector.normalize();
@@ -136,7 +136,7 @@ const spacewarMain = function(p) {
     return gravityVector;
   }
 
-  p.calculateSunsGravityForce = (pos, mass) => {
+  p5.calculateSunsGravityForce = (pos, mass) => {
     const sunPos = new PVector (windowSize / 2, windowSize/2);
     const G = 30;
     const gravityVector = calculateGravityForce(sunPos, pos, mass, G);
@@ -144,7 +144,7 @@ const spacewarMain = function(p) {
     return gravityVector;
   }
 
-  p.calculatePlanetsGravityForce = (pos, mass) => {
+  p5.calculatePlanetsGravityForce = (pos, mass) => {
     const planetPos = thePlanet.getPlanetPos();
     const G = 18;
     const gravityVector = calculateGravityForce(planetPos, pos, mass,G);
@@ -153,7 +153,7 @@ const spacewarMain = function(p) {
   }
 
   // see: https://www.euclideanspace.com/maths/algebra/vectors/angleBetween/
-  p.angleBetweenVectors = (v1, v2) => {
+  p5.angleBetweenVectors = (v1, v2) => {
     const dp = v1.dot(v2);
     const denom = v1.mag() * v2.mag();
     const angle = acos(dp/denom);
@@ -161,56 +161,65 @@ const spacewarMain = function(p) {
     return degrees(angle);
   }
 
-  p.playRandomExplosionSound = () => {
+  p5.playRandomExplosionSound = () => {
     const randomExplosionSound = parseInt(random(10));
 
     explosions[randomExplosionSound].play();
   }
 
-  p.gameOpening = () => {
+  p5.gameOpening = () => {
     return gameStatus == 0;
   }
 
-  p.gamePlaying = () => {
+  p5.gamePlaying = () => {
     return gameStatus == 1;
   }
 
-  p.gamePaused = () => {
+  p5.gamePaused = () => {
     return gameStatus == 2;
   }
 
-  p.gameOver = () => {
+  p5.gameOver = () => {
     return gameStatus == 3;
   }
 
-  p.setGameOpening = () => {
+  p5.setGameOpening = () => {
     gameStatus = 0; // opening
     bigSwoosh.play();
   }
 
-  p.setGamePlaying = () => {
+  p5.setGamePlaying = () => {
     gameStatus = 1; // playing
   }
 
-  p.setGamePaused = () => {
+  p5.setGamePaused = () => {
     gameStatus = 2; // paused
   }
 
-  p.setGameOver = () => {
+  p5.setGameOver = () => {
     gameStatus = 3; // game over
     gameOverNoise.play();
   }
 
   // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE =-=-==-=-==-=-==-=-==-=-==-=-=
 
-  p.setup = () => {
-    p.createCanvas(1000,1000);
-    theStars = new Stars(p, windowSize);
+  p5.setup = () => {
+    p5.createCanvas(windowSize, windowSize);
+    p5.background(255,255,255);
 
-    theStats = new Stats(p, windowSize);
+    theStars = new Stars(p5, windowSize);
+
+    theStats = new Stats(p5, windowSize);
+
+    const partWindow = windowSize /8;
+    ship1 = new Ship(p5, this, windowSize, 0, partWindow, partWindow, p5.color(0,255,0));
+    ship2 = new Ship(p5, this, windowSize, 1, windowSize - partWindow,windowSize - partWindow,  p5.color(255,0,0));
+    ship1.setEnemyShip(ship2);
+    ship2.setEnemyShip(ship1);
+    
     return;
-    thePlanet = new Planet(p, windowSize);
-    theAI = new AI(p, windowSize);
+    thePlanet = new Planet(p5, windowSize);
+    theAI = new AI(p5, windowSize);
     
     // Load a soundfile from the /data folder of the sketch and play it back
     explosions = new SoundFile[10];
@@ -232,15 +241,8 @@ const spacewarMain = function(p) {
     
     //println("does this update git hub?????? ");
     
-    size(800,800);
-    background(255,255,255);
-    mouseX = width / 2;
-    mouseY = height / 2;
-    const partWindow = windowSize /8;
-    ship1 = new Ship(0, partWindow, partWindow, color(0,255,0));
-    ship2 = new Ship(1, windowSize - partWindow,windowSize - partWindow, color(255,0,0));
-    ship1.setEnemyShip(ship2);
-    ship2.setEnemyShip(ship1);
+    //mouseX = width / 2;
+    //mouseY = height / 2;
     if (useAI) {
       theAI.assignShips(ship2, ship1);
     }
@@ -248,7 +250,7 @@ const spacewarMain = function(p) {
     setGameOpening();
   }
 
-  p.draw = () => {
+  p5.draw = () => {
     background(0,0,0);
     theStars.render();
     theStars.renderSun(25);
@@ -330,12 +332,12 @@ const spacewarMain = function(p) {
     }
   }
 
-  p.draw = function() {
+  p5.draw = function() {
     let x = 100;
     let y = 100;
-    p.background(0);
-    //p.fill(255);
-    //p.rect(x, y, 90, 50);
+    p5.background(0);
+    //p5.fill(255);
+    //p5.rect(x, y, 90, 50);
     theStars.render();
   };
 
