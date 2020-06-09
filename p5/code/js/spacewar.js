@@ -21,7 +21,7 @@ const spacewarMain = function(p) {
   let theStars;
   let thePlanet;
   let theAI;
-  let stats;
+  let theStats;
   const killPoints = 10;
 
   // =-=-==-=-==-=-==-=-==-=-==-=-= UTILITY FUNCTIONS =-=-==-=-==-=-==-=-==-=-==-=-=
@@ -204,10 +204,13 @@ const spacewarMain = function(p) {
   // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE =-=-==-=-==-=-==-=-==-=-==-=-=
 
   p.setup = () => {
-    stats = new Stats();
-    theStars = new Stars();
-    thePlanet = new Planet();
-    theAI = new AI();
+    p.createCanvas(1000,1000);
+    theStars = new Stars(p, windowSize);
+
+    theStats = new Stats(p, windowSize);
+    return;
+    thePlanet = new Planet(p, windowSize);
+    theAI = new AI(p, windowSize);
     
     // Load a soundfile from the /data folder of the sketch and play it back
     explosions = new SoundFile[10];
@@ -327,33 +330,16 @@ const spacewarMain = function(p) {
     }
   }
 
-  p.setup = function() {
-    p.createCanvas(1000,1000);
-  };
-
   p.draw = function() {
+    let x = 100;
+    let y = 100;
     p.background(0);
-    p.fill(255);
-    p.rect(x, y, 90, 50);
+    //p.fill(255);
+    //p.rect(x, y, 90, 50);
+    theStars.render();
   };
 
 }
 
-
-
-let spacewarMain2 = function(p) {
-  let x = 100;
-  let y = 100;
-
-  p.setup = function() {
-    p.createCanvas(1000,1000);
-  };
-
-  p.draw = function() {
-    p.background(0);
-    p.fill(255);
-    p.rect(x, y, 90, 50);
-  };
-};
 
 let spacewar = new p5(spacewarMain);
