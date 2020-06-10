@@ -208,7 +208,6 @@ const spacewarMain = function(p5) {
     p5.background(255,255,255);
 
     theStars = new Stars(p5, windowSize);
-
     theStats = new Stats(p5, windowSize);
 
     const partWindow = windowSize /8;
@@ -217,9 +216,10 @@ const spacewarMain = function(p5) {
     ship1.setEnemyShip(ship2);
     ship2.setEnemyShip(ship1);
     
+
+    thePlanet = new Planet(p5, this, windowSize);
     return;
 
-    thePlanet = new Planet(p5, windowSize);
     theAI = new AI(p5, windowSize);
     
     // Load a soundfile from the /data folder of the sketch and play it back

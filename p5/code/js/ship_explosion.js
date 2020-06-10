@@ -1,91 +1,86 @@
-
 class ShipExplosion {
-  PVector pos, vel;
-  float rot;
-  boolean live;
-  int ttl;
-  int lifeSpan = 100;
-  float explosionScale, scaleGrowth = 1.04;
-  Ship parentShip; // which ship owns this explosion
-  color explosionColor;
-  int[] partsRots = new int[4];
-  int[] partsRotsIncs = new int[4];
-  float[] shipLineCoords = { -halfShipWidth, halfShipHeight, 
-                             0, -halfShipHeight,
-                             0, -halfShipHeight,
-                             halfShipWidth, halfShipHeight,
-                             halfShipWidth, halfShipHeight,
-                             0, halfShipHeight / 2,
-                             0, halfShipHeight / 2,
-                             -halfShipWidth,  halfShipHeight,
-                             -halfShipWidth,  halfShipHeight,
-                             halfShipWidth, halfShipHeight };
-                           
-  Explosion (Ship ship) {
-    pos = new PVector(0,0);
-    vel = new PVector(0,0);
-    rot = 0;
-    live = false;
-    ttl = 0;
-    explosionColor = ship.shipColor;
-    parentShip = ship;
-   }
-  
-  void start(Ship ship) {
-   for (int i = 0; i < 4; ++i) {
-      partsRots[i] = 0;
-      partsRotsIncs[i] = int(random(4,7));
-    }
-    ttl = lifeSpan;
-    live = true;
-    pos.set(ship.pos);
-    vel.set(ship.vel);
-    vel.mult(0.5);
-    explosionScale = 1.0;
+  constructor(p5, spacewar, ship) {
+    this.p5 = p5;
+    this.ship = ship; // which ship owns this explosion
+    this.spacewar = spacewar;
+    this.pos = this.p5.createVector(0,0);
+    this.vel = this.p5.createVector(0,0);
+    this.rot = 0;
+    this.live = false;
+    this.ttl = 0;
+    this.lifeSpan = 100;
+    this.explosionColor = this.ship.shipColor;
+    this.scaleGrowth = 1.04;
+
+    this.partsRots = [];
+    this.partsRotsIncs = [];
+    this.shipLineCoords = [ -this.spacewar.halfShipWidth, this.spacewar.halfShipHeight, 
+                             0, -this.spacewar.halfShipHeight,
+                             0, -this.spacewar.halfShipHeight,
+                             this.spacewar.halfShipWidth, this.spacewar.halfShipHeight,
+                             this.spacewar.halfShipWidth, this.spacewar.halfShipHeight,
+                             0, this.spacewar.halfShipHeight / 2,
+                             0, this.spacewar.halfShipHeight / 2,
+                             -this.spacewar.halfShipWidth,  this.spacewar.halfShipHeight,
+                             -this.spacewar.halfShipWidth,  this.spacewar.halfShipHeight,
+                             this.spacewar.halfShipWidth, this.spacewar.halfShipHeight ];
   }
   
-  void checkStop() {
-    if (ttl == 0) {
-      live = false;
-      parentShip.setShipState(0); // visible again
+  start = (ship) => {
+   for (let i = 0; i < 4; ++i) {
+     this.partsRots[i] = 0;
+     this.partsRotsIncs[i] = parseInt(this.p5.random(4,7));
+    }
+    this.ttl = this.lifeSpan;
+    this.live = true;
+    this.pos.set(ship.pos);
+    this.vel.set(ship.vel);
+    this.vel.mult(0.5);
+    this.explosionScale = 1.0;
+  }
+  
+  checkStop = () => {
+    if (this.ttl == 0) {
+      this.live = false;
+      this.ship.setShipState(0); // visible again
     }
   }
   
-  void update() {
-    if (live) {
+  update = () => {
+    if (this.live) {
        // now decrease ttl
-      ttl--;
-      explosionScale *= scaleGrowth;
-      checkStop();
+      this.ttl--;
+      this.explosionScale *= this.scaleGrowth;
+      this.checkStop();
     }
-    pos.add(vel);
-    rot++;
+    this.pos.add(vel);
+    this.rot++;
   }
   
-  void render() {
-    update();
-    if (live) {
+  render = () => {
+    this.update();
+    if (this.live) {
       // draw the explosion!
-      pushMatrix();
-      translate(pos.x,pos.y);
-      rotate(radians(rot));
-      fill(0);
-      stroke(explosionColor);
+      this.p5.pushMatrix();
+      this.p5.translate(this.pos.x,this.pos.y);
+      this.p5.rotate(this.p5.radians(this.rot));
+      this.p5.fill(0);
+      this.p5.stroke(this.explosionColor);
       
-      int j;
-      PVector expandVec = new PVector(1.0, 1.0);
-      for (int i = 0; i < 4; ++i) {
-         j = i * 4;
-         pushMatrix();
-         rotate(radians(partsRots[i]));
-         expandVec.set(cos(radians(i * 45)), sin(radians(i*45)));
-         expandVec.mult(explosionScale);
-         line(shipLineCoords[j] + expandVec.x, shipLineCoords[j+1] + expandVec.y, 
-              shipLineCoords[j+2] + expandVec.x, shipLineCoords[j+3] + expandVec.y);
-         popMatrix();
-         partsRots[i] += partsRotsIncs[i];
+      let j;
+      let expandVec = this.p5.createVector(1.0, 1.0);
+      for (let i = 0; i < 4; ++i) {
+        j = i * 4;
+        this.p5.ppushMatrix();
+        this.p5.rotate(radians(partsRots[i]));
+        expandVec.set(this.p5.cos(this.p5.radians(i * 45)), this.p5.sin(this.p5.radians(i*45)));
+        expandVec.mult(explosionScale);
+        this.p5.line(this.shipLineCoords[j] + expandVec.x, this.shipLineCoords[j+1] + expandVec.y, 
+                     this.shipLineCoords[j+2] + expandVec.x, this.shipLineCoords[j+3] + expandVec.y);
+        this.p5.popMatrix();
+        this.partsRots[i] += this.partsRotsIncs[i];
      }    
-      popMatrix();
+      this.p5.popMatrix();
     }
   }
   
