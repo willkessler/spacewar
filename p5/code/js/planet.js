@@ -9,7 +9,8 @@ class Planet {
     this.initialAngle = -55;
     this.initialAngleRadians = this.p5.radians(this.initialAngle);
     this.initialVelAngleRadians = this.p5.radians(this.initialAngle - 90);
-    this.pos = this.p5.createVector(this.windowSize /2 + this.p5.cos(this.initialAngleRadians) * this.orbitDistance, windowSize/2 + this.p5.sin(this.initialAngleRadians) * this.orbitDistance);
+    this.pos = this.p5.createVector(this.windowSize /2 + this.p5.cos(this.initialAngleRadians) * this.orbitDistance, 
+                                    this.windowSize/2 + this.p5.sin(this.initialAngleRadians)  * this.orbitDistance);
     this.vel = this.p5.createVector(this.p5.cos(this.initialVelAngleRadians) * this.orbitalVelocity, this.p5.sin(this.initialVelAngleRadians) * this.orbitalVelocity);
     this.accel = this.p5.createVector(0,0);
     this.radius = 25;

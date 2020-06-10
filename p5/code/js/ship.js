@@ -289,6 +289,7 @@ class Ship {
 // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE FOR SHIPS =-=-==-=-==-=-==-=-==-=-==-=-= 
   
   update = () => {
+    console.log("planet pos", thePlanet.pos);
     this.updateHyperspaceCountdown();
     if (this.thrustOn) {
       this.accel.x = this.p5.sin(this.p5.radians(this.rot)) * this.accelFactor;
@@ -298,7 +299,8 @@ class Ship {
     } else { 
       this.engineTemp = this.p5.max(0,this.engineTemp - 1);
     }
-    this.accel.add(calculateSunsGravityForce(this.pos,this.mass));
+
+    this.accel.add(calculateSunsGravityForce(this.pos,   this.mass));
     this.accel.add(calculatePlanetsGravityForce(this.pos,this.mass));
     this.vel.add(this.accel);
     this.vel.mult(this.friction);

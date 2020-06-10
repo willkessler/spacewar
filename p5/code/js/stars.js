@@ -3,9 +3,11 @@ class Stars {
   constructor(p5, windowSize) {
     this.numStars = 100;
     this.p5 = p5;
+    this.windowSize = windowSize;
     this.stars = [];
     for (let i = 0; i < this.numStars; ++i) {
-      this.stars[i] = this.p5.createVector (this.p5.random(0,windowSize), this.p5.random (0, windowSize));
+      this.stars[i] = this.p5.createVector (this.p5.random(0,this.windowSize), 
+                                            this.p5.random(0, this.windowSize));
     }
 
   }
@@ -21,7 +23,7 @@ class Stars {
 
   renderSun = (size) => {
     this.p5.push();
-    this.p5.translate(windowSize/2, windowSize / 2);
+    this.p5.translate(this.windowSize/2, this.windowSize / 2);
     this.p5.fill(255,255, 0);
     this.p5.stroke(255,205,0);
     const fc = this.p5.frameCount;

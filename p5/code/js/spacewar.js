@@ -104,16 +104,16 @@ const spacewarMain = function(p5) {
 
   this.calculateGravityForce = (gravityWellPos, pos, mass, G) => {
     const distToWell = pos.dist(gravityWellPos);
-    const shipToWellVector = gravityWellPos.sub(pos);
-    shipToWellVector.normalize();
+    const shipToWellVector = gravityWellPos.copy();
+    shipToWellVector.sub(pos).normalize();
     const gravityFactor = (1.0 / (Math.pow(distToWell, 1.57))) * G * mass;
-    const gravityVector = shipToWellVector.mult(gravityFactor);
+    shipToWellVector.mult(gravityFactor);
 
-    return gravityVector;
+    return shipToWellVector;
   }
 
   this.calculateSunsGravityForce = (pos, mass) => {
-    const sunPos = p5.createVector(windowSize / 2, windowSize/2);
+    const sunPos = p5.createVector(this.windowSize / 2, this.windowSize/2);
     const G = 30;
     const gravityVector = calculateGravityForce(sunPos, pos, mass, G);
 
