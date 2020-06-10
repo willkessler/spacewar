@@ -14,9 +14,9 @@ class Missile {
     this.halfMissileWidth = this.spacewar.halfShipWidth * 0.3;
     this.halfMissileHeight = this.spacewar.halfShipHeight * .8;
     this.fuel = 1000;
-    this.pos = new PVector(0,0);
-    this.vel = new PVector(0,0);
-    this.accel = new PVector(0,0);
+    this.pos = this.p5.createVector(0,0);
+    this.vel = this.p5.createVector(0,0);
+    this.accel = this.p5.createVector(0,0);
     this.parent = ship;
     this.missileExplosion = new MissileExplosion(p5, spacewar, this);
   }
@@ -160,7 +160,7 @@ class Missile {
       //println("Missile away at : ", pos);
       this.p5.fill(0);
       this.p5.stroke(this.parent.shipColor);
-      this.p5.pushMatrix();
+      this.p5.push();
       this.p5.translate(this.pos.x,this.pos.y);
       this.p5.rotate(this.p5.radians(this.rot));
 
@@ -192,7 +192,7 @@ class Missile {
       this.p5.endShape(CLOSE);
 
 
-      popMatrix();
+      this.p5.pop();
     }
   }
 

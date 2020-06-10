@@ -51,7 +51,7 @@ class AI {
     
   }
   
-  inFiringRange = (likelihood, minAllowedDistance, conditionType) {
+  inFiringRange = (likelihood, minAllowedDistance, conditionType) => {
     const timeToFire = this.p5.random(0,1);
     const p1 = this.parentShip.getShipPos();
     const p2 = this.otherShip.getShipPos();

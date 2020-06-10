@@ -19,14 +19,14 @@ class Planet {
     this.collisionTolerance = this.radius * 0.8;
   }
 
-   getPlanetPos = () => {
+  getPlanetPos = () => {
     return this.pos;
   }
   
   collides = (checkPos) => {
-    float planetDistance = this.pos.dist(checkPos);
+    const planetDistance = this.pos.dist(checkPos);
     return (planetDistance < this.collisionTolerance);
- }
+  }
   
   update = () => {
     // apply sun's gravity
@@ -38,25 +38,25 @@ class Planet {
   }
   
   render = () => {
-    this.p5.pushMatrix();
+    this.p5.push();
     this.p5.translate(this.pos.x, this.pos.y);
     this.p5.fill(this.planetColor);
     this.p5.noStroke();
     this.p5.ellipse(0,0, this.radius, this.radius);
     this.p5.stroke(40,255,40);
     this.p5.noFill();
-    this.p5.ellipse(0,0, this.radius * innerSpin / 10, this.radius);
-    this.p5.ellipse(0,0, this.radius * innerSpin / 10 - 10, this.radius);
-    this.p5.popMatrix();
+    this.p5.ellipse(0,0, this.radius * this.innerSpin / 10, this.radius);
+    this.p5.ellipse(0,0, this.radius * this.innerSpin / 10 - 10, this.radius);
+    this.p5.pop();
     
     if (!this.spacewar.gamePaused()){
     
       this.innerSpin = this.innerSpin + this.innerSpinInc;
       if (this.innerSpin > 10) {
-        this.innerSpinInc = -this.innerSpinInc;
+        this.innerSpinInc = -1 * this.innerSpinInc;
         this.innerSpin = 10;
       } else if (this.innerSpin < 1) {
-        this.innerSpinInc = -this.innerSpinInc;
+        this.innerSpinInc = -1 * this.innerSpinInc;
         this.innerSpin = 1;
       }    
     }

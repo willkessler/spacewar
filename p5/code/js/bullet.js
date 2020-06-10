@@ -70,10 +70,10 @@ class Bullet {
     if (this.live) {
       this.fill(this.bulletColor);
       this.stroke(this.bulletColor);
-      this.p5.pushMatrix();
+      this.p5.push();
       this.translate(this.pos.x,this.pos.y);
       this.ellipse(-this.bulletSize / 2, -this.bulletSize / 2, this.bulletSize, this.bulletSize);
-      this.p5.popMatrix();
+      this.p5.pop();
     }
   }
 }

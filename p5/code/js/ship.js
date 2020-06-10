@@ -36,8 +36,8 @@ class Ship {
     for (let i = 0; i < this.numBullets; ++i) {
       this.bullets[i] = new Bullet(this);
     }
-    this.shipExplosion = new ShipExplosion(this);
-    this.missile = new Missile(this);
+    this.shipExplosion = new ShipExplosion(p5, spacewar, this);
+    this.missile = new Missile(p5, spacewar, this, windowSize);
 
   }
  
@@ -135,7 +135,7 @@ class Ship {
   }
   
   updateBullets = ()  => {
-    for (let bullet of bullets) {
+    for (let bullet of this.bullets) {
       if (bullet.isLive()) {
         bullet.update();
       }
@@ -143,7 +143,7 @@ class Ship {
   }
   
   renderBullets = () => {
-    for (let bullet of bullets) {
+    for (let bullet of this.bullets) {
       if (bullet.isLive()) {
         bullet.render();
       }
@@ -155,7 +155,7 @@ class Ship {
   }
 
   onALiveBullet = (opponentShip) => {
-    for (let bullet of bullets) {
+    for (let bullet of this.bullets) {
       if (bullet.isLive()) {
         if (bullet.collides(opponentShip.pos, bullet.shipBulletCollisionTolerance)) {
           bullet.die();
@@ -167,7 +167,7 @@ class Ship {
   }
   
   missileOnALiveBullet = (opponentShip) => {
-    for (let bullet of bullets) {
+    for (let bullet of this.bullets) {
       if (bullet.isLive()) {
         if (bullet.collides(opponentShip.missile.getMissilePos(), bullet.shipBulletCollisionTolerance)) {
           bullet.die();
@@ -206,20 +206,20 @@ class Ship {
   }
   
   hitOtherShip = (otherShip) => {
-    return (((abs(this.pos.x - otherShip.pos.x) < 10) && (abs(this.pos.y - otherShip.pos.y) < 10)));
+    return (((this.p5.abs(this.pos.x - otherShip.pos.x) < 10) && (this.p5.abs(this.pos.y - otherShip.pos.y) < 10)));
   }
   
   hitOtherShipsMissile = (otherShip) => {
     const missilePos = otherShip.missile.getMissilePos();
-    const impact = (((abs(this.pos.x - missilePos.x) < 10) && (abs(this.pos.y - missilePos.y) < 10)));
+    const impact = (((this.p5.abs(this.pos.x - missilePos.x) < 10) && (this.p5.abs(this.pos.y - missilePos.y) < 10)));
     return impact && otherShip.missile.isLive();
   }
   
   missileHitOtherShipsMissile = (otherShip) => {
     const missile1Pos = this.missile.getMissilePos();
     const missile2Pos = otherShip.missile.getMissilePos();
-    const impact = (((abs(missile1Pos.x - missile2Pos.x) < 10) && (abs(missile1Pos.y - missile2Pos.y) < 10)));
-    return impact && missile.isLive() && otherShip.missile.isLive();
+    const impact = (((this.p5.abs(missile1Pos.x - missile2Pos.x) < 10) && (this.p5.abs(missile1Pos.y - missile2Pos.y) < 10)));
+    return impact && this.missile.isLive() && otherShip.missile.isLive();
   }
   
   blowUp = () => {
@@ -259,31 +259,31 @@ class Ship {
   }
   
   drawShip = (pos, rot, proportion, shipColor, drawThrust) => {
-    this.p5.pushMatrix();
+    this.p5.push();
     this.p5.translate(pos.x,pos.y);
     this.p5.scale(proportion);
-    this.p5.rotate(radians(rot));
+    this.p5.rotate(this.p5.radians(rot));
     this.p5.fill(0);
     this.p5.stroke(shipColor);
     this.p5.beginShape();
-    this.p5.vertex(-halfShipWidth,  halfShipHeight);
-    this.p5.vertex(0,  -halfShipHeight);
-    this.p5.vertex(halfShipWidth,  halfShipHeight);
-    this.p5.vertex(0, halfShipHeight / 2);
-    this.p5.endShape(CLOSE);
+    this.p5.vertex(-this.halfShipWidth,  this.halfShipHeight);
+    this.p5.vertex(0,  -this.halfShipHeight);
+    this.p5.vertex(this.halfShipWidth,  this.halfShipHeight);
+    this.p5.vertex(0, this.halfShipHeight / 2);
+    this.p5.endShape(p5.CLOSE);
     if (drawThrust) {
       // draw flames
       const flicker = random(0,10) / 10 + 1; 
       this.p5.fill(255 * flicker,255 * flicker,0);
       this.p5.stroke(255 * flicker,255 * flicker,0);
       this.p5.beginShape();
-      this.p5.vertex(-halfShipWidth / 2, halfShipHeight * 1.1);
-      this.p5.vertex(0, halfShipHeight * 1.6 * flicker);
-      this.p5.vertex(halfShipWidth / 2, halfShipHeight * 1.1);
-      this.p5.vertex(0, halfShipHeight * 1.4);
-      this.p5.endShape(CLOSE);
+      this.p5.vertex(-this.halfShipWidth / 2, this.halfShipHeight * 1.1);
+      this.p5.vertex(0, this.halfShipHeight * 1.6 * flicker);
+      this.p5.vertex(this.halfShipWidth / 2, this.halfShipHeight * 1.1);
+      this.p5.vertex(0, this.halfShipHeight * 1.4);
+      this.p5.endShape(p5.CLOSE);
     }
-    this.p5.popMatrix();
+    this.p5.pop();
   }
   
 // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE FOR SHIPS =-=-==-=-==-=-==-=-==-=-==-=-= 

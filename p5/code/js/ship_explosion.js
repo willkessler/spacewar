@@ -53,7 +53,7 @@ class ShipExplosion {
       this.explosionScale *= this.scaleGrowth;
       this.checkStop();
     }
-    this.pos.add(vel);
+    this.pos.add(this.vel);
     this.rot++;
   }
   
@@ -61,7 +61,7 @@ class ShipExplosion {
     this.update();
     if (this.live) {
       // draw the explosion!
-      this.p5.pushMatrix();
+      this.p5.push();
       this.p5.translate(this.pos.x,this.pos.y);
       this.p5.rotate(this.p5.radians(this.rot));
       this.p5.fill(0);
@@ -71,16 +71,16 @@ class ShipExplosion {
       let expandVec = this.p5.createVector(1.0, 1.0);
       for (let i = 0; i < 4; ++i) {
         j = i * 4;
-        this.p5.ppushMatrix();
+        this.p5.push();
         this.p5.rotate(radians(partsRots[i]));
         expandVec.set(this.p5.cos(this.p5.radians(i * 45)), this.p5.sin(this.p5.radians(i*45)));
         expandVec.mult(explosionScale);
         this.p5.line(this.shipLineCoords[j] + expandVec.x, this.shipLineCoords[j+1] + expandVec.y, 
                      this.shipLineCoords[j+2] + expandVec.x, this.shipLineCoords[j+3] + expandVec.y);
-        this.p5.popMatrix();
+        this.p5.pop();
         this.partsRots[i] += this.partsRotsIncs[i];
      }    
-      this.p5.popMatrix();
+      this.p5.pop();
     }
   }
   

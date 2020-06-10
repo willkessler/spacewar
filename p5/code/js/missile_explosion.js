@@ -51,7 +51,7 @@ class MissileExplosion {
       this.ttl--;
       this.checkStop();
     }
-    for (let i = 0; i < numPieces; ++i) {
+    for (let i = 0; i < this.numPieces; ++i) {
       this.piecesRot[i] += this.rotInc;
     }
     this.tVecMultiplier += 0.1;
@@ -66,7 +66,7 @@ class MissileExplosion {
       this.p5.stroke(explosionColor);
       this.p5.fill(255);
       for (let i = 0; i < this.numPieces; ++i) {
-        this.p5.pushMatrix();
+        this.p5.push();
         transVec.set(0,0);
         transVec.add(this.piecesTVec[i]);
         transVec.mult(this.tVecMultiplier);
@@ -75,7 +75,7 @@ class MissileExplosion {
         this.p5.translate(transVec.x, transVec.y);
         this.p5.rotate(this.p5.radians(this.piecesRot[i]));
         this.p5.line(this.piecesX1[0],0, this.piecesX2[1], 0);
-        this.p5.popMatrix();
+        this.p5.pop();
       }
     }
   }
