@@ -93,12 +93,12 @@ class Stats {
       } else {
         winnerShipId = ship1Score < ship2Score ? 2 : 1;
       }
-      this.gameOverRot = max(0, this.gameOverRot - 5);
-      this.gameOverScale = max(1.0, this.gameOverScale - 0.2);
+      this.gameOverRot = this.p5.max(0, this.gameOverRot - 5);
+      this.gameOverScale = this.p5.max(1.0, this.gameOverScale - 0.2);
       this.p5.push();
       this.p5.translate(this.windowSize / 2 , this.windowSize / 2 + 20);
       this.p5.scale(this.gameOverScale);
-      this.p5.rotate(radians(this.gameOverRot));
+      this.p5.rotate(this.p5.radians(this.gameOverRot));
       this.p5.textFont('Courier', 64);
       this.p5.text("GAME   OVER!", -215,0 );
       this.p5.pop();

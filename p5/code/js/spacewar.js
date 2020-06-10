@@ -4,11 +4,11 @@ const spacewarMain = function(p5) {
 
   p5.keyPressed = (key) => {  
     this.theStats.hideInstructions();
-    switch (key) {
+    switch (key.key) {
     case '0':
     case '1':
     case '2':
-      if (gameOpening() || gamePaused()) {
+      if (this.gameOpening() || this.gamePaused()) {
         this.setGamePlaying();
       } else {
         this.setGamePaused();
@@ -56,7 +56,7 @@ const spacewarMain = function(p5) {
   }
 
   p5.keyReleased = (key) => {
-    switch (key) {
+    switch (key.key) {
     case 's':
       this.ship1.cancelThrust();
       break;
@@ -99,14 +99,14 @@ const spacewarMain = function(p5) {
   this.insideSun = (pos) => {
     const halfWindow = this.windowSize / 2;
 
-    return ((this.p5.abs(halfWindow - pos.x) < 10) && (this.p5.abs(halfWindow - pos.y) < 10));  
+    return ((p5.abs(halfWindow - pos.x) < 10) && (p5.abs(halfWindow - pos.y) < 10));  
   }
 
   this.calculateGravityForce = (gravityWellPos, pos, mass, G) => {
     const distToWell = pos.dist(gravityWellPos);
     const shipToWellVector = gravityWellPos.sub(pos);
     shipToWellVector.normalize();
-    const gravityFactor = (1.0 / (pow(distToWell, 1.57))) * G * mass;
+    const gravityFactor = (1.0 / (Math.pow(distToWell, 1.57))) * G * mass;
     const gravityVector = shipToWellVector.mult(gravityFactor);
 
     return gravityVector;
@@ -132,15 +132,15 @@ const spacewarMain = function(p5) {
   this.angleBetweenVectors = (v1, v2) => {
     const dp = v1.dot(v2);
     const denom = v1.mag() * v2.mag();
-    const angle = acos(dp/denom);
+    const angle = p5.acos(dp/denom);
 
-    return degrees(angle);
+    return p5.degrees(angle);
   }
 
   this.playRandomExplosionSound = () => {
-    const randomExplosionSound = parseInt(random(10));
+    const randomExplosionSound = parseInt(p5.random(10));
 
-    explosions[randomExplosionSound].play();
+    this.explosions[randomExplosionSound].play();
   }
 
   this.gameOpening = () => {
@@ -246,8 +246,8 @@ const spacewarMain = function(p5) {
     this.ship2.setEnemyShip(this.ship1);
     
 
-    this.thePlanet = new Planet(p5, this, this.windowSize);
-    this.theAI = new AI(p5, this, this.windowSize);
+    this.thePlanet = new Planet(p5, this);
+    this.theAI = new AI(p5, this);
         
     if (this.useAI) {
       this.theAI.assignShips(this.ship2, this.ship1);

@@ -38,14 +38,14 @@ class Missile {
   calculateEnemyShipDirection = () => {
     const adjustment = this.p5.createVector(0,0);
     const missileToShip = this.p5.createVector(0,0);
-    missileToShip.set(enemyShip.pos);
-    missileToShip.sub(pos);
+    missileToShip.set(this.enemyShip.pos);
+    missileToShip.sub(this.pos);
     const distanceToEnemy = missileToShip.mag();
     if (distanceToEnemy > this.enemyRange) { // have to be close to it, first off
       return adjustment;
     }
     missileToShip.normalize();
-    const angleToEnemy = this.spacewar.angleBetweenVectors(vel, missileToShip);
+    const angleToEnemy = this.spacewar.angleBetweenVectors(this.vel, missileToShip);
 
    // println("In range of enemy ship:", distanceToEnemy, "angle:", angleToEnemy);
     if (angleToEnemy <= this.enemyAngleTolerance) { // limited view in front of the missile
@@ -55,8 +55,8 @@ class Missile {
       const adjustmentAngleRadians = this.p5.radians(adjustmentAngle);
       const ca = this.p5.cos(adjustmentAngleRadians);
       const sa = this.p5.sin(adjustmentAngleRadians);
-      adjustment.set(ca * vel.x - sa * vel.y,
-                     sa * vel.x + ca * vel.y);
+      adjustment.set(ca * this.vel.x - sa * this.vel.y,
+                     sa * this.vel.x + ca * this.vel.y);
       adjustment.normalize();
       adjustment.mult(this.missileSmartFactor);
        // println("  Adjustment vector:", adjustment);
@@ -129,7 +129,7 @@ class Missile {
     // between the current position and the newly calculated position.
     currentPos.set(this.pos);
 
-    accel.add(enemyShipDirection); // try to track enemy ship
+    this.accel.add(enemyShipDirection); // try to track enemy ship
     this.vel.add(this.accel);
     this.vel.limit(this.maxSpeed);
     this.pos.add(this.vel);
@@ -141,7 +141,7 @@ class Missile {
     shipMotionVec.normalize();
     this.rot = this.p5.degrees(this.p5.atan2(shipMotionVec.y, shipMotionVec.x)) - 90;
 
-    if (this.insideSun(this.pos) || this.spacewar.thePlanet.collides(pos)) {
+    if (this.spacewar.insideSun(this.pos) || this.spacewar.thePlanet.collides(this.pos)) {
       this.die();
     }
     this.spacewar.wrapAroundEdges(this.pos);
@@ -172,14 +172,14 @@ class Missile {
       this.p5.vertex(this.halfMissileWidth, this.halfMissileHeight);
       this.p5.vertex(this.halfMissileWidth, -this.halfMissileHeight);
       this.p5.vertex(0, -this.halfMissileHeight * 0.7);
-      this.p5.endShape(CLOSE);
+      this.p5.endShape(this.p5.CLOSE);
 
       // Missile fin 1
-      this.p5.line(-halfMissileWidth, -halfMissileHeight, -halfMissileWidth * 1.5, -halfMissileHeight * 1.4);
-      this.p5.line(-halfMissileWidth * 1.5, -halfMissileHeight * 1.4,-halfMissileWidth, -halfMissileHeight * 0.85);
+      this.p5.line(-this.halfMissileWidth, -this.halfMissileHeight, -this.halfMissileWidth * 1.5, -this.halfMissileHeight * 1.4);
+      this.p5.line(-this.halfMissileWidth * 1.5, -this.halfMissileHeight * 1.4,-this.halfMissileWidth, -this.halfMissileHeight * 0.85);
       // Missile fin 2
-      this.p5.line(halfMissileWidth, -halfMissileHeight, halfMissileWidth * 1.5, -halfMissileHeight * 1.4);
-      this.p5.line(halfMissileWidth * 1.5, -halfMissileHeight * 1.4,halfMissileWidth, -halfMissileHeight * 0.85);
+      this.p5.line(this.halfMissileWidth, -this.halfMissileHeight, this.halfMissileWidth * 1.5, -this.halfMissileHeight * 1.4);
+      this.p5.line(this.halfMissileWidth * 1.5, -this.halfMissileHeight * 1.4,this.halfMissileWidth, -this.halfMissileHeight * 0.85);
 
       const flicker = this.p5.random(0,10) / 10 + 1;
       this.p5.fill(255 * flicker,255 * flicker,0);
@@ -189,7 +189,7 @@ class Missile {
       this.p5.vertex(0, -this.halfMissileHeight * 1.6 * flicker);
       this.p5.vertex(-this.halfMissileWidth / 6, -this.halfMissileHeight * 1.1);
       this.p5.vertex(0, -this.halfMissileHeight * 1.4);
-      this.p5.endShape(CLOSE);
+      this.p5.endShape(this.p5.CLOSE);
 
 
       this.p5.pop();

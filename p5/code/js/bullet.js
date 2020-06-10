@@ -36,15 +36,15 @@ class Bullet {
     this.live = true;
     //println("bullet fire:", initialPos.x, initialVel);
     this.pos.set(initialPos);
-    const shipRotRad = radians(shipRot);
-    const fireVelocity = this.p5.createVector(sin(shipRotRad), -cos(shipRotRad));
+    const shipRotRad = this.p5.radians(shipRot);
+    const fireVelocity = this.p5.createVector(this.p5.sin(shipRotRad), -this.p5.cos(shipRotRad));
     fireVelocity.normalize();
     this.pos.add(fireVelocity.x * shipHeight / 2, fireVelocity.y * shipHeight / 2);
-    fireVelocity.mult(gunForceMag);
+    fireVelocity.mult(this.gunForceMag);
     const bulletVel = this.p5.createVector(initialVel.x * damper, initialVel.y * damper);
     bulletVel.add(fireVelocity);
     this.vel.set(bulletVel);
-    this.ttl = lifeSpan;
+    this.ttl = this.lifeSpan;
     this.spacewar.gunshot.play();
   }
   
@@ -68,11 +68,11 @@ class Bullet {
   
   render = () => {
     if (this.live) {
-      this.fill(this.bulletColor);
-      this.stroke(this.bulletColor);
+      this.p5.fill(this.bulletColor);
+      this.p5.stroke(this.bulletColor);
       this.p5.push();
-      this.translate(this.pos.x,this.pos.y);
-      this.ellipse(-this.bulletSize / 2, -this.bulletSize / 2, this.bulletSize, this.bulletSize);
+      this.p5.translate(this.pos.x,this.pos.y);
+      this.p5.ellipse(-this.bulletSize / 2, -this.bulletSize / 2, this.bulletSize, this.bulletSize);
       this.p5.pop();
     }
   }

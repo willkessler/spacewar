@@ -1,9 +1,9 @@
 class AI {
 
-  constructor(p5, spacewar, windowSize) {
+  constructor(p5, spacewar) {
     this.p5 = p5;
     this.spacewar = spacewar;
-    this.windowSize = windowSize;
+    this.windowSize = spacewar.windowSize;
 
     this.activateThrust = false;
     this.activateBulletFire = false;
@@ -29,15 +29,15 @@ class AI {
     directionVector.set(p2);
     directionVector.sub(p1);
     directionVector.normalize();
-    const rot = parentShip.getShipRot();
+    const rot = this.parentShip.getShipRot();
     const rotVec = this.p5.createVector(0,0);
     const radRot = this.p5.radians(rot);
-    rotVec.set(cos(radRot), sin(radRot));
+    rotVec.set(this.p5.cos(radRot), this.p5.sin(radRot));
     const rotDiff = this.spacewar.angleBetweenVectors(directionVector,rotVec) ;
     const crossProduct = rotVec.cross(directionVector);
     const turnSign = crossProduct.z < 0 ? -1 : 1;
     //println("directionVector:", directionVector, "rotVector:", rotVec,  "angle", rotDiff);
-    if (abs(rotDiff) > 10) {
+    if (Math.abs(rotDiff) > 10) {
       if (rotDiff < 0) {
         this.turnAmount = -turnSign;
       } else {
@@ -82,7 +82,7 @@ class AI {
     const rotDiff = this.spacewar.angleBetweenVectors(vecToGravityWell,velVec) ;
     const crossProduct = velVec.cross(vecToGravityWell);
     const turnSign = crossProduct.z < 0 ? -1 : 1;
-    if (abs(rotDiff) < 10) {
+    if (Math.abs(rotDiff) < 10) {
       if (rotDiff < 0) {
         this.turnAmount = -turnSign;
       } else {
@@ -112,7 +112,7 @@ class AI {
   // Depending on all decisions made up to this point, do the final control actions on the ship
   takeAction = () => {
     
-    if (abs(this.turnAmount) > 0) { 
+    if (Math.abs(this.turnAmount) > 0) { 
       this.parentShip.startTurning(this.turnAmount);
       this.turnAmount = 0;
     } else {

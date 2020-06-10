@@ -130,7 +130,7 @@ class Ship {
   }
   
   updateHyperspaceCountdown = () => {
-    this.hyperspaceCountdown = max(0, this.hyperspaceCountdown - 1);
+    this.hyperspaceCountdown = this.p5.max(0, this.hyperspaceCountdown - 1);
     //println("shipid", shipId, "hyperspace ct", hyperspaceCountdown);
   }
   
@@ -151,7 +151,7 @@ class Ship {
   }
   
   addPoints = (amountToAdd) => {
-    this.score = max(0, this.score + this.amountToAdd);
+    this.score = Math.max(0, this.score + this.amountToAdd);
   }
 
   onALiveBullet = (opponentShip) => {
@@ -202,7 +202,7 @@ class Ship {
 
   cancelThrust = () => {
     this.thrustOn = false;
-    this.p5.noise.stop();
+    //this.p5.noise.stop();
   }
   
   hitOtherShip = (otherShip) => {
@@ -266,21 +266,21 @@ class Ship {
     this.p5.fill(0);
     this.p5.stroke(shipColor);
     this.p5.beginShape();
-    this.p5.vertex(-this.halfShipWidth,  this.halfShipHeight);
-    this.p5.vertex(0,  -this.halfShipHeight);
-    this.p5.vertex(this.halfShipWidth,  this.halfShipHeight);
-    this.p5.vertex(0, this.halfShipHeight / 2);
+    this.p5.vertex(-this.spacewar.halfShipWidth,  this.spacewar.halfShipHeight);
+    this.p5.vertex(0,  -this.spacewar.halfShipHeight);
+    this.p5.vertex(this.spacewar.halfShipWidth,  this.spacewar.halfShipHeight);
+    this.p5.vertex(0, this.spacewar.halfShipHeight / 2);
     this.p5.endShape(p5.CLOSE);
     if (drawThrust) {
       // draw flames
-      const flicker = random(0,10) / 10 + 1; 
+      const flicker = this.p5.random(0,10) / 10 + 1; 
       this.p5.fill(255 * flicker,255 * flicker,0);
       this.p5.stroke(255 * flicker,255 * flicker,0);
       this.p5.beginShape();
-      this.p5.vertex(-this.halfShipWidth / 2, this.halfShipHeight * 1.1);
-      this.p5.vertex(0, this.halfShipHeight * 1.6 * flicker);
-      this.p5.vertex(this.halfShipWidth / 2, this.halfShipHeight * 1.1);
-      this.p5.vertex(0, this.halfShipHeight * 1.4);
+      this.p5.vertex(-this.spacewar.halfShipWidth / 2, this.spacewar.halfShipHeight * 1.1);
+      this.p5.vertex(0, this.spacewar.halfShipHeight * 1.6 * flicker);
+      this.p5.vertex(this.spacewar.halfShipWidth / 2, this.spacewar.halfShipHeight * 1.1);
+      this.p5.vertex(0, this.spacewar.halfShipHeight * 1.4);
       this.p5.endShape(p5.CLOSE);
     }
     this.p5.pop();
@@ -291,12 +291,12 @@ class Ship {
   update = () => {
     this.updateHyperspaceCountdown();
     if (this.thrustOn) {
-      this.accel.x = sin(radians(this.rot)) * this.accelFactor;
-      this.accel.y = -cos(radians(this.rot)) * this.accelFactor;
-      this.spacewar.noise.play();
+      this.accel.x = this.p5.sin(this.p5.radians(this.rot)) * this.accelFactor;
+      this.accel.y = -this.p5.cos(this.p5.radians(this.rot)) * this.accelFactor;
+      //this.spacewar.noise.play();
       this.engineTemp += this.engineHeatConstant;
     } else { 
-      this.engineTemp = max (0,this.engineTemp - 1);
+      this.engineTemp = this.p5.max(0,this.engineTemp - 1);
     }
     this.accel.add(calculateSunsGravityForce(this.pos,this.mass));
     this.accel.add(calculatePlanetsGravityForce(this.pos,this.mass));
@@ -308,8 +308,8 @@ class Ship {
     this.vel.limit(this.maxSpeed);
     this.pos.add(this.vel);
     this.rot = this.rot + this.rotChange;
-    this.spacewar.wrapAroundEdges(pos);
-    if (this.spacewar.insideSun(pos)) {
+    this.spacewar.wrapAroundEdges(this.pos);
+    if (this.spacewar.insideSun(this.pos)) {
       this.blowUp();
       this.addPoints(-this.killPoints);
     } else if (this.engineTemp > this.tooHotEngineTemp) {

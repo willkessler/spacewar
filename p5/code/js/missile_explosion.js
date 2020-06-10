@@ -27,7 +27,7 @@ class MissileExplosion {
   }
 
   start = () => {
-    this.ttl = lifeSpan;
+    this.ttl = this.lifeSpan;
     this.live = true;
     const missilePos = this.parent.getMissilePos();
     const missileVel = this.parent.getMissileVel();
@@ -63,7 +63,7 @@ class MissileExplosion {
     if (this.live) {
       let transVec = this.p5.createVector(0,0);
       // draw the explosion!
-      this.p5.stroke(explosionColor);
+      this.p5.stroke(this.explosionColor);
       this.p5.fill(255);
       for (let i = 0; i < this.numPieces; ++i) {
         this.p5.push();
