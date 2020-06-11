@@ -46,6 +46,11 @@ class ShipExplosion {
     }
   }
   
+  cancel = () => {
+    this.live = 0;
+    this.ttl = 0;
+  }
+  
   update = () => {
     if (this.live) {
        // now decrease ttl

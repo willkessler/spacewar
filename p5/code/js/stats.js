@@ -66,7 +66,6 @@ class Stats {
     this.p5.fill(0,255,0);
     const score1 = ship1.getScore();
     const score2 = ship2.getScore();
-    console.log('Scores:', score1, score2);
     this.p5.text("Player 1: " + score1, 10,  20);
     // player 2 score
     this.p5.fill(255,0,0);
@@ -109,6 +108,8 @@ class Stats {
       this.p5.textFont('Courier',16);// reset font size
       this.p5.fill(winnerShipId == 2 ? ship2.getShipColor() : ship1.getShipColor() );
       this.p5.text("Winner:  Ship " + winnerShipId, this.windowSize / 2 - 80 , this.windowSize / 2 + 60);
+      this.p5.fill(255);
+      this.p5.text("Press \"1\" (1 player) or \"2\" (2 player) to play again!", this.windowSize / 2 - 220 , this.windowSize - 60);
     }    
 
     this.renderShipStatus(ship1);

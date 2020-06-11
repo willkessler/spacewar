@@ -8,7 +8,10 @@ const spacewarMain = function(p5) {
     case '0':
     case '1':
     case '2':
-      if (this.gameOpening() || this.gamePaused()) {
+      if (this.gameOver()) {
+        this.resetGamePlay();
+        this.setGamePlaying();
+      } else if (this.gameOpening() || this.gamePaused()) {
         this.setGamePlaying();
       } else {
         this.setGamePaused();
@@ -181,6 +184,11 @@ const spacewarMain = function(p5) {
     this.gameOverNoise.play();
   }
 
+  this.resetGamePlay = () => {
+    ship1.resetToStart();
+    ship2.resetToStart();
+  }
+
   // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE =-=-==-=-==-=-==-=-==-=-==-=-=
 
   p5.preload = () => {
@@ -229,7 +237,7 @@ const spacewarMain = function(p5) {
   }
   
   p5.setup = () => {
-    this.windowSize = 800;
+    this.windowSize = 700;
     this.shipWidth = 15;
     this.shipHeight = this.shipWidth * 1.5;
     this.halfShipHeight = this.shipHeight / 2;

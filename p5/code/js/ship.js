@@ -151,7 +151,6 @@ class Ship {
   }
   
   addPoints = (amountToAdd) => {
-    debugger;
     this.score = Math.max(0, this.score + amountToAdd);
   }
 
@@ -223,9 +222,7 @@ class Ship {
     return impact && this.missile.isLive() && otherShip.missile.isLive();
   }
   
-  blowUp = () => {
-    this.setShipState(2);
-    this.shipExplosion.start(this);
+  resetShip = () => {
     // make ship respawn somewhere near the margins so you don't get insta-die by spawning near planet or sun.
     const buffer = 50;
     let newX, newY;
@@ -249,10 +246,32 @@ class Ship {
     this.vel.x = 0;
     this.vel.y = 0;
     this.engineTemp = 0;
-    this.spacewar.playRandomExplosionSound();
     this.cancelThrust();
-    
+  }
+
+  resetBullets = () => {
+    for (let bullet of this.bullets) {
+      bullet.die();
+    }
+  }
+
+  resetToStart = () => {
+    this.livesLeft = this.totalLives;
+    this.score = 0;
+    this.resetShip();
+    this.resetBullets();
+    this.setShipState(0);
+    this.shipExplosion.cancel();
+    this.missile.cancel();
+    this.missile.missileExplosion.cancel();    
+  }
+
+  blowUp = () => {
+    this.setShipState(2);
+    this.spacewar.playRandomExplosionSound();
+    this.shipExplosion.start(this);
     this.livesLeft = this.livesLeft - 1;
+    this.resetShip();
     if (this.livesLeft == 0) {
       // GAME OVER! A ship is out of lives.
       this.spacewar.setGameOver();
@@ -290,7 +309,6 @@ class Ship {
 // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE FOR SHIPS =-=-==-=-==-=-==-=-==-=-==-=-= 
   
   update = () => {
-    console.log("planet pos", thePlanet.pos);
     this.updateHyperspaceCountdown();
     if (this.thrustOn) {
       this.accel.x = this.p5.sin(this.p5.radians(this.rot)) * this.accelFactor;

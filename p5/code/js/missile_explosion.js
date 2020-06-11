@@ -39,6 +39,10 @@ class MissileExplosion {
     this.tVecMultiplier = 1.0;
   }
   
+  cancel = () => {
+    this.live = false;
+  }
+  
   checkStop = () => {
     if (this.ttl == 0) {
       this.live = false;

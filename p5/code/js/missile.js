@@ -97,12 +97,15 @@ class Missile {
     }
  }
 
+  cancel = () => {
+    this.live = false;
+  }
+
   die = () => {
     this.live = false;
     this.spacewar.playRandomExplosionSound();
     this.missileExplosion.start();
  }
-
 
   isLive = () => {
     return this.live;
