@@ -151,7 +151,8 @@ class Ship {
   }
   
   addPoints = (amountToAdd) => {
-    this.score = Math.max(0, this.score + this.amountToAdd);
+    debugger;
+    this.score = Math.max(0, this.score + amountToAdd);
   }
 
   onALiveBullet = (opponentShip) => {
@@ -313,11 +314,11 @@ class Ship {
     this.spacewar.wrapAroundEdges(this.pos);
     if (this.spacewar.insideSun(this.pos)) {
       this.blowUp();
-      this.addPoints(-this.killPoints);
+      this.addPoints(-this.spacewar.killPoints);
     } else if (this.engineTemp > this.tooHotEngineTemp) {
       // you overheated, you die!
       this.blowUp();
-      this.addPoints(-this.killPoints);
+      this.addPoints(-this.spacewar.killPoints);
       this.setShipState(3); // overheat
       this.shipStateTimeout = 100;
     }    
