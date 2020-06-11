@@ -1,5 +1,5 @@
 class Ship {
-  
+
   PVector pos, vel, accel;
   float thrustConstant = 0.2;
   float maxSpeed, friction;
@@ -23,7 +23,7 @@ class Ship {
   int hyperspaceCountdown;
   int totalLives = 5; // how many lives your ship gets before GAME OVER
   int livesLeft;
-  
+
   Ship(int id, float x, float y, color sColor) {
     score = 0;
     accel = new PVector(0,0);
@@ -32,7 +32,7 @@ class Ship {
     livesLeft = totalLives;
     maxSpeed = 5;
     shipWidth = 15;
-    shipColor = sColor;    
+    shipColor = sColor;
     rot = 90;
     rotChange = 0;
     rotIncrement = 3;
@@ -49,49 +49,49 @@ class Ship {
     shipExplosion = new Explosion(this);
     missile = new Missile(this);
   }
- 
+
 // =-=-==-=-==-=-==-=-==-=-==-=-= UTILITY METHODS =-=-==-=-==-=-==-=-==-=-==-=-=
 
   int getScore(){
     return score;
   }
-  
+
   int getShipState() {
     return shipState;
   }
-  
+
   PVector getShipPos() {
     return pos;
   }
-  
+
   PVector getShipVel() {
     return vel;
   }
-  
+
   float getShipRot() {
     return rot - 90; // because of the way the ships are rendered, the "actual" ship heading is off by 90 degrees so we compensate here
   }
-  
+
   void setShipState(int newShipState) {
     shipState = newShipState;
   }
-  
+
   void setEnemyShip(Ship enemy) {
     missile.setEnemyShip(enemy);
   }
-  
+
   int getEngineTemp() {
     return engineTemp;
   }
-  
+
   int getShipColor() {
     return shipColor;
   }
-  
+
   int getLivesLeft() {
     return livesLeft;
   }
-    
+
   void fireBullet() {
     if (missile.isLive() || gamePaused() || gameOver()) {
       return; // can't fire bullets while your missile is away! or the game is paused
@@ -104,16 +104,16 @@ class Ship {
         }
     }
   }
-  
+
   void fireMissile() {
     //println("Missile for ship " + shipId + " is away!");
-    missile.fire();    
+    missile.fire();
   }
-  
+
   void killMissile() {
     missile.die();
   }
-  
+
   void checkBulletsCollide(Ship otherShip) {
     for (Bullet bullet1 : bullets) {
       for (Bullet bullet2 : otherShip.bullets) {
@@ -127,7 +127,7 @@ class Ship {
       }
     }
   }
-  
+
   void goIntoHyperspace() {
     if (hyperspaceCountdown == 0) {
       setShipState(1); // ship is now in hyperspace
@@ -135,14 +135,14 @@ class Ship {
       pos.x = random(width);
       pos.y = random(height);
       hyperspaceCountdown = hyperspaceTimeLimit;
-    }    
+    }
   }
-  
+
   void updateHyperspaceCountdown() {
     hyperspaceCountdown = max(0, hyperspaceCountdown - 1);
     //println("shipid", shipId, "hyperspace ct", hyperspaceCountdown);
   }
-  
+
   void updateBullets() {
     for (Bullet bullet : bullets) {
       if (bullet.isLive()) {
@@ -150,7 +150,7 @@ class Ship {
       }
     }
   }
-  
+
   void renderBullets() {
     for (Bullet bullet : bullets) {
       if (bullet.isLive()) {
@@ -158,7 +158,7 @@ class Ship {
       }
     }
   }
-  
+
   void addPoints(int amountToAdd) {
     score = max(0,score + amountToAdd);
   }
@@ -174,7 +174,7 @@ class Ship {
     }
     return false;
   }
-  
+
    boolean missileOnALiveBullet(Ship opponentShip) {
     for (Bullet bullet : bullets) {
       if (bullet.isLive()) {
@@ -185,27 +185,27 @@ class Ship {
       }
     }
     return false;
-  } 
- 
+  }
+
   boolean engineGettingTooHot() {
     return (engineTemp > tooHotEngineTemp * 0.75);
   }
-      
+
   void startTurning(float direction) {
     rotChange = direction * rotIncrement;
   }
-  
+
   void stopTurning() {
     rotChange = 0;
   }
-  
+
   void applyThrust() {
     if (gamePaused() || gameOver()) {
       return;
     }
     if (shipState == 0) { // can't accelerate if not alive
       thrustOn = true;
-      
+
     }
   }
 
@@ -213,28 +213,26 @@ class Ship {
     thrustOn = false;
     noise.stop();
   }
-  
+
   boolean hitOtherShip(Ship otherShip) {
     return (((abs(pos.x - otherShip.pos.x) < 10) && (abs(pos.y - otherShip.pos.y) < 10)));
   }
-  
+
   boolean hitOtherShipsMissile(Ship otherShip) {
     PVector missilePos = otherShip.missile.getMissilePos();
     boolean impact = (((abs(pos.x - missilePos.x) < 10) && (abs(pos.y - missilePos.y) < 10)));
     return impact && otherShip.missile.isLive();
   }
-  
-  
+
+
    boolean missileHitOtherShipsMissile(Ship otherShip) {
      PVector missile1Pos = missile.getMissilePos();
      PVector missile2Pos = otherShip.missile.getMissilePos();
      boolean impact = (((abs(missile1Pos.x - missile2Pos.x) < 10) && (abs(missile1Pos.y - missile2Pos.y) < 10)));
      return impact && missile.isLive() && otherShip.missile.isLive();
    }
-  
-  void blowUp() {
-    setShipState(2);
-    shipExplosion.start(this);
+
+  void resetShip() {
     // make ship respawn somewhere near the margins so you don't get insta-die by spawning near planet or sun.
     float buffer = 50;
     float newX, newY;
@@ -253,21 +251,43 @@ class Ship {
         newY = random(0,windowSize);
       }
     }
-   
+
     pos.set( newX, newY);
     vel.x = 0;
     vel.y = 0;
     engineTemp = 0;
-    playRandomExplosionSound();
     cancelThrust();
-    
+  }
+
+  void resetBullets() {
+    for (Bullet bullet : bullets) {
+      bullet.die();
+    }
+  }
+
+  void resetToStart() {
+     livesLeft = totalLives;
+     score = 0;
+     resetShip();
+     resetBullets();
+     setShipState(0);
+     shipExplosion.cancel();
+     missile.cancel();
+     missile.missileExplosion.cancel();
+  }
+
+  void blowUp() {
+    setShipState(2);
+    shipExplosion.start(this);
+    playRandomExplosionSound();
     livesLeft = livesLeft - 1;
+    resetShip();
     if (livesLeft == 0) {
       // GAME OVER! A ship is out of lives.
       setGameOver();
     }
   }
-  
+
   void drawShip(PVector pos, float rot, float proportion, color shipColor, boolean drawThrust) {
     pushMatrix();
     translate(pos.x,pos.y);
@@ -283,7 +303,7 @@ class Ship {
     endShape(CLOSE);
     if (drawThrust) {
       // draw flames
-      float flicker = random(0,10) / 10 + 1; 
+      float flicker = random(0,10) / 10 + 1;
       fill(255 * flicker,255 * flicker,0);
       stroke(255 * flicker,255 * flicker,0);
       beginShape();
@@ -295,9 +315,9 @@ class Ship {
     }
     popMatrix();
   }
-  
-// =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE FOR SHIPS =-=-==-=-==-=-==-=-==-=-==-=-= 
-  
+
+// =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE FOR SHIPS =-=-==-=-==-=-==-=-==-=-==-=-=
+
   void update() {
     updateHyperspaceCountdown();
     if (thrustOn) {
@@ -305,7 +325,7 @@ class Ship {
       accel.y = -cos(radians(rot)) * accelFactor;
       noise.play();
       engineTemp += engineHeatConstant;
-    } else { 
+    } else {
       engineTemp = max (0,engineTemp - 1);
     }
     accel.add(calculateSunsGravityForce(pos,mass));
@@ -328,13 +348,13 @@ class Ship {
       addPoints(-killPoints);
       setShipState(3); // overheat
       shipStateTimeout = 100;
-    }    
-    
+    }
+
     accel.mult(0);
-  
+
     updateBullets();
   }
-  
+
   void render() {
     shipExplosion.render(); // if an explosion is live, render it
     renderBullets();
@@ -348,7 +368,7 @@ class Ship {
         return;
       }
     }
-    
-    drawShip(pos, rot, 1.0, shipColor, thrustOn);    
+
+    drawShip(pos, rot, 1.0, shipColor, thrustOn);
    }
 }

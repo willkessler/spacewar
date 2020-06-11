@@ -124,6 +124,10 @@ class Missile {
     }
  }
   
+  void cancel() {
+    live = false;
+  }
+
   void die() {
     live = false;
     playRandomExplosionSound();

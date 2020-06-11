@@ -110,6 +110,8 @@ class Stats {
       textFont(f,16);// reset font size
       fill(winnerShipId == 2 ? ship2.getShipColor() : ship1.getShipColor() );
       text("Winner:  Ship " + winnerShipId, windowSize / 2 - 80 , windowSize / 2 + 60);
+      fill(255);
+      text("Press \"1\" (1 player) or \"2\" (2 player) to play again!", windowSize / 2 - 220 , windowSize - 60);
     }    
 
     renderShipStatus(ship1);

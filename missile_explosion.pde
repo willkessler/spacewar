@@ -48,6 +48,10 @@ class MissileExplosion {
     tVecMultiplier = 1.0;
   }
   
+  void cancel() {
+    live = false;
+  }
+
   void checkStop() {
     if (ttl == 0) {
       live = false;

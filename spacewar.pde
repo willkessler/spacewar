@@ -53,7 +53,10 @@ void keyPressed() {
    case '0':
    case '1':
    case '2':
-     if (gameOpening() || gamePaused()) {
+     if (gameOver()) {
+        resetGamePlay();
+        setGamePlaying();
+     } else if (gameOpening() || gamePaused()) {
        setGamePlaying();
      } else {
        setGamePaused();
@@ -215,6 +218,11 @@ void setGamePaused() {
 void setGameOver() {
   gameStatus = 3; // game over
   gameOverNoise.play();
+}
+
+void resetGamePlay() {
+  ship1.resetToStart();
+  ship2.resetToStart();
 }
 
 // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE =-=-==-=-==-=-==-=-==-=-==-=-=
