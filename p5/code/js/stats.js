@@ -20,6 +20,7 @@ class Stats {
     const tempColor = ship.getShipColor();
     const scaledTemp = (ship.getEngineTemp() / ship.tooHotEngineTemp) * barWidth;
     
+    this.p5.noStroke();
     this.p5.fill(tempColor);
     this.p5.text("Engine Temp:" , leftOffset ,barTop - 5);
     this.p5.fill(0);
@@ -46,7 +47,6 @@ class Stats {
     // display how many lives ya got left
     const leftOffset = ship.shipId == 0 ? 20 : this.windowSize - 110;
     this.p5.fill(ship.getShipColor());
-    //text("Ships left:" + ship.getLivesLeft(), leftOffset, 110);
     let pos = this.p5.createVector(leftOffset, 110);
     const rot = 0;
     const shipColor = ship.getShipColor();
@@ -60,13 +60,17 @@ class Stats {
  
   
   render = (ship1, ship2) => {
-    this.p5.textFont('Courier');
+    this.p5.textFont('Courier', 16);
     // player 1 score
+    this.p5.noStroke();
     this.p5.fill(0,255,0);
-    this.p5.text("Player 1: " + ship1.getScore(),10,20);
+    const score1 = ship1.getScore();
+    const score2 = ship2.getScore();
+    console.log('Scores:', score1, score2);
+    this.p5.text("Player 1: " + score1, 10,  20);
     // player 2 score
     this.p5.fill(255,0,0);
-    this.p5.text("Player2: " + ship2.getScore(),this.windowSize - 120,20);
+    this.p5.text("Player2: " + score2,  this.windowSize - 120, 20);
         
     if (gameOpening()) {
       this.p5.fill (200);

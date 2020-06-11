@@ -161,7 +161,11 @@ const spacewarMain = function(p5) {
 
   this.setGameOpening = () => {
     this.gameStatus = 0; // opening
-    //this.bigSwoosh.play();
+    try {
+      this.bigSwoosh.play();
+    } catch(ex) {
+      console.log('Cannot play intro swoosh sound yet. Queueing.');
+    }
   }
 
   this.setGamePlaying = () => {
@@ -181,6 +185,7 @@ const spacewarMain = function(p5) {
 
   p5.preload = () => {
     p5.soundFormats('mp3', 'wav');
+    //p5.registerPreloadMethod('loadSound');
     
     // Load a soundfile from the /data folder of the sketch and play it back
     this.explosions = [];
@@ -289,7 +294,7 @@ const spacewarMain = function(p5) {
     
     if (ship2.hitOtherShipsMissile(ship1)) {
       ship2.blowUp();
-      ship1.addPoints(killPoints);
+      ship1.addPoints(this.killPoints);
       ship1.killMissile();
     }
     
@@ -310,12 +315,12 @@ const spacewarMain = function(p5) {
     
     if (thePlanet.collides(ship1.pos)) {
       ship1.blowUp();
-      ship1.addPoints(-killPoints);
+      ship1.addPoints(-this.killPoints);
     }
     
     if (thePlanet.collides(ship2.pos)) {
       ship2.blowUp();
-      ship2.addPoints(-killPoints);
+      ship2.addPoints(-this.killPoints);
     }
     
     if (gamePlaying()) {

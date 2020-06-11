@@ -270,7 +270,7 @@ class Ship {
     this.p5.vertex(0,  -this.spacewar.halfShipHeight);
     this.p5.vertex(this.spacewar.halfShipWidth,  this.spacewar.halfShipHeight);
     this.p5.vertex(0, this.spacewar.halfShipHeight / 2);
-    this.p5.endShape(p5.CLOSE);
+    this.p5.endShape(this.p5.CLOSE);
     if (drawThrust) {
       // draw flames
       const flicker = this.p5.random(0,10) / 10 + 1; 
@@ -281,7 +281,7 @@ class Ship {
       this.p5.vertex(0, this.spacewar.halfShipHeight * 1.6 * flicker);
       this.p5.vertex(this.spacewar.halfShipWidth / 2, this.spacewar.halfShipHeight * 1.1);
       this.p5.vertex(0, this.spacewar.halfShipHeight * 1.4);
-      this.p5.endShape(p5.CLOSE);
+      this.p5.endShape(this.p5.CLOSE);
     }
     this.p5.pop();
   }
