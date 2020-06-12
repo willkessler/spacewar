@@ -121,16 +121,16 @@ class Ship {
   
   goIntoHyperspace = () => {
     if (this.hyperspaceCountdown == 0) {
-      this.spacewar.setShipState(1); // ship is now in hyperspace
+      this.setShipState(1); // ship is now in hyperspace
       this.shipStateTimeout = 100; // how long ship stays in hyperspace
-      this.pos.x = this.p5.random(width);
-      this.pos.y = this.p5.random(height);
+      this.pos.x = this.p5.random(this.spacewar.windowSize);
+      this.pos.y = this.p5.random(this.spacewar.windowSize);
       this.hyperspaceCountdown = this.hyperspaceTimeLimit;
     }    
   }
   
   updateHyperspaceCountdown = () => {
-    this.hyperspaceCountdown = this.p5.max(0, this.hyperspaceCountdown - 1);
+    this.hyperspaceCountdown = Math.max(0, this.hyperspaceCountdown - 1);
     //println("shipid", shipId, "hyperspace ct", hyperspaceCountdown);
   }
   
@@ -316,7 +316,7 @@ class Ship {
       //this.spacewar.noise.play();
       this.engineTemp += this.engineHeatConstant;
     } else { 
-      this.engineTemp = this.p5.max(0,this.engineTemp - 1);
+      this.engineTemp = Math.max(0,this.engineTemp - 1);
     }
 
     this.accel.add(calculateSunsGravityForce(this.pos,   this.mass));

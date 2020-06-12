@@ -86,7 +86,7 @@ class Stats {
       this.p5.text("SPACE    WAR!", -270,0 );
       this.p5.pop();
       this.p5.textFont('Courier',16);// reset font size
-      this.gameOpeningScale = this.p5.max(1.0, this.gameOpeningScale - 0.25);
+      this.gameOpeningScale = Math.max(1.0, this.gameOpeningScale - 0.25);
     } else if (gameOver()) {
       const ship1Score = ship1.getScore();
       const ship2Score = ship2.getScore();
@@ -96,8 +96,8 @@ class Stats {
       } else {
         winnerShipId = ship1Score < ship2Score ? 2 : 1;
       }
-      this.gameOverRot = this.p5.max(0, this.gameOverRot - 5);
-      this.gameOverScale = this.p5.max(1.0, this.gameOverScale - 0.2);
+      this.gameOverRot = Math.max(0, this.gameOverRot - 5);
+      this.gameOverScale = Math.max(1.0, this.gameOverScale - 0.2);
       this.p5.push();
       this.p5.translate(this.windowSize / 2 , this.windowSize / 2 + 20);
       this.p5.scale(this.gameOverScale);
@@ -109,7 +109,7 @@ class Stats {
       this.p5.fill(winnerShipId == 2 ? ship2.getShipColor() : ship1.getShipColor() );
       this.p5.text("Winner:  Ship " + winnerShipId, this.windowSize / 2 - 80 , this.windowSize / 2 + 60);
       this.p5.fill(255);
-      this.p5.text("Press \"1\" (1 player) or \"2\" (2 player) to play again!", this.windowSize / 2 - 220 , this.windowSize - 60);
+      this.p5.text("Press \"1\" (1 player) or \"2\" (2 player) to play again!", this.windowSize / 2 - 240 , this.windowSize - 60);
     }    
 
     this.renderShipStatus(ship1);
