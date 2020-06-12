@@ -53,6 +53,11 @@ class Explosion {
     }
   }
   
+  void cancel() {
+    live = false;
+    ttl = 0;
+  }
+
   void update() {
     if (live) {
        // now decrease ttl
