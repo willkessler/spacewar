@@ -17,7 +17,7 @@ const spacewarMain = function(p5) {
         this.setGamePaused();
       }
       
-      if (key == '2') {
+      if (key.key == '2') {
         this.useAI = false;
       }
       break; 
@@ -167,7 +167,7 @@ const spacewarMain = function(p5) {
     try {
       this.bigSwoosh.play();
     } catch(ex) {
-      console.log('Cannot play intro swoosh sound yet. Queueing.');
+      //console.log('Cannot play intro swoosh sound yet. Queueing.');
     }
   }
 
@@ -187,6 +187,7 @@ const spacewarMain = function(p5) {
   this.resetGamePlay = () => {
     ship1.resetToStart();
     ship2.resetToStart();
+    theStats.resetToStart();
   }
 
   // =-=-==-=-==-=-==-=-==-=-==-=-= MAIN CODE =-=-==-=-==-=-==-=-==-=-==-=-=
@@ -197,47 +198,49 @@ const spacewarMain = function(p5) {
     
     // Load a soundfile from the /data folder of the sketch and play it back
     this.explosions = [];
-    this.explosions[0] = p5.loadSound("./assets/Explosion+1.mp3");
-    this.explosions[1] = p5.loadSound("./assets/Explosion+2.mp3");
-    this.explosions[2] = p5.loadSound("./assets/Explosion+3.mp3");
-    this.explosions[3] = p5.loadSound("./assets/Explosion+4.mp3");
-    this.explosions[4] = p5.loadSound("./assets/Explosion+5.mp3");
-    this.explosions[5] = p5.loadSound("./assets/Explosion+6.mp3");
-    this.explosions[6] = p5.loadSound("./assets/Explosion+7.mp3");
-    this.explosions[7] = p5.loadSound("./assets/Explosion+9.mp3");
-    this.explosions[8] = p5.loadSound("./assets/Explosion+10.mp3");
-    this.explosions[9] = p5.loadSound("./assets/Explosion+11.mp3");
-    this.gunshot =       p5.loadSound("./assets/Gun+Silencer.mp3");
-    this.engineAlarm =   p5.loadSound("./assets/beep-07.mp3");
-    this.missileShot =   p5.loadSound("./assets/Missile+2.mp3");
+    this.explosions[0] = p5.loadSound("./assets/Explosion1.mp3");
+    this.explosions[1] = p5.loadSound("./assets/Explosion2.mp3");
+    this.explosions[2] = p5.loadSound("./assets/Explosion3.mp3");
+    this.explosions[3] = p5.loadSound("./assets/Explosion4.mp3");
+    this.explosions[4] = p5.loadSound("./assets/Explosion5.mp3");
+    this.explosions[5] = p5.loadSound("./assets/Explosion6.mp3");
+    this.explosions[6] = p5.loadSound("./assets/Explosion7.mp3");
+    this.explosions[7] = p5.loadSound("./assets/Explosion9.mp3");
+    this.explosions[8] = p5.loadSound("./assets/Explosion10.mp3");
+    this.explosions[9] = p5.loadSound("./assets/Explosion11.mp3");
+    this.gunshot =       p5.loadSound("./assets/GunSilencer.mp3");
+    this.engineAlarm =   p5.loadSound("./assets/beep07.mp3");
+    this.missileShot =   p5.loadSound("./assets/Missile2.mp3");
     this.bigSwoosh =     p5.loadSound('./assets/bigswoosh.mp3');
     this.gameOverNoise = p5.loadSound("./assets/smb_gameover.wav");
+    this.gunshot.amp(0.5);
+    this.bigSwoosh.amp(0.5);
 
     // Set up white noise engine sound
     // from: https://p5js.org/examples/sound-noise-drum-envelope.html
     if (false) {
-    this.whiteNoise = new p5.Noise(); // other types include 'brown' and 'pink'
-    this.whiteNoise.start();
+      this.whiteNoise = new p5.Noise(); // other types include 'brown' and 'pink'
+      this.whiteNoise.start();
 
-    // multiply noise volume by 0
-    // (keep it quiet until we're ready to make noise!)
-    this.whiteNoise.amp(0.5);
+      // multiply noise volume by 0
+      // (keep it quiet until we're ready to make noise!)
+      this.whiteNoise.amp(0.5);
 
-    const env = new p5.Env();
-    // set attackTime, decayTime, sustainRatio, releaseTime
-    env.setADSR(0.001, 0.1, 0.2, 0.1);
-    // set attackLevel, releaseLevel
-    env.setRange(1, 0);
+      const env = new p5.Env();
+      // set attackTime, decayTime, sustainRatio, releaseTime
+      env.setADSR(0.001, 0.1, 0.2, 0.1);
+      // set attackLevel, releaseLevel
+      env.setRange(1, 0);
 
-    // p5.Amplitude will analyze all sound in the sketch
-    // unless the setInput() method is used to specify an input.
-    const analyzer = new p5.Amplitude();
+      // p5.Amplitude will analyze all sound in the sketch
+      // unless the setInput() method is used to specify an input.
+      const analyzer = new p5.Amplitude();
     }
 
   }
   
   p5.setup = () => {
-    this.windowSize = 700;
+    this.windowSize = 600;
     this.shipWidth = 15;
     this.shipHeight = this.shipWidth * 1.5;
     this.halfShipHeight = this.shipHeight / 2;

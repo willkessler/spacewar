@@ -7,7 +7,13 @@ class Stats {
     this.p5 = p5;
     this.windowSize = windowSize;
   }
- 
+  
+  resetToStart = () => {
+    this.gameOverRot = 135;
+    this.gameOpeningScale = 6;
+    this.gameOverScale = 16;
+  }
+
   hideInstructions = () => {
     this.showInstructions = false;  
   }
